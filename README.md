@@ -1,5 +1,5 @@
 # DevOps From Scratch (Early Access)
-Author: David Bour, *version: 0.0.1*
+Author: David Bour, *version: 0.0.2*
 
 ## Who is this for?
 
@@ -101,7 +101,7 @@ Type in `exit()` to exit the Python interpreter.
 
 1. Install [Visual Studio Code](https://code.visualstudio.com/). This is where we'll write our code and configurations.
 2. Create an account on [Github](https://github.com/). Github is a useful *version control system* based on *git* where we save and share our code.
-  - Resources to get started with `git`. *Note* DO NOT SKIP THIS! This is vital to our software pipeline.
+  - Resources to get started with `git`. *Note:* DO NOT SKIP THIS! This is vital to our software pipeline.
       1. Learning git - https://docs.github.com/en/get-started/getting-started-with-git
       2. Interactive learning - https://learngitbranching.js.org/
 3. Install [Docker](https://docs.docker.com/engine/install/). *Docker* is used to manage container images. You don't have to know more at the moment beyond the fact that *Docker* will be used to house our applications so they run the same on anyone's computer, including ones running in the cloud such as AWS (Amazon Web Services).
@@ -111,13 +111,16 @@ Type in `exit()` to exit the Python interpreter.
 
 If you recall, we're going to center the teachings of DevOps principles around the concept of a software delivery pipeline. A software delivery pipeline usually consists of the following components:
 
-1. Build Step (Continous Integration)
+1. Software Development (Software Development Lifecycle)
     - Local Development
+
+2. Build Step (Continuous Integration)
     - Unit Testing
+    - Integration Testing
     - Artifact Management
     - Code Quality Scans
 
-2. Deploy Step (Continuous Delivery/Deployment)
+3. Deploy Step (Continuous Delivery/Deployment)
     - Infrastructure Setup
     - Environment Setup
     - Observability
@@ -130,9 +133,9 @@ You've recently joined a software team that has developed an application display
 
 After rubbing your eyes in disbelief, you come to realize they have no *continuous integration* in place. As you come to grips with the situation, you come up with the following conclusions:
 
-1. Each person has their unique way of setting up the application. This means when a feature doesn't work as expected, it will be difficult to discern if its because of a local issue on someone's computer or if it's an actual software bug.
+1. Each person is saving backups of older copies of the application by creating a new file and giving it a verison number each time they make changes. If these files are deleted, they'll lose all of their records! Also, since they have no quick way of seeing what changed between versions of code, they will most likely have to compare everything, including the lines of code that did not change!
 
-2. Each person is saving backups of older copies of the application by creating a new file and giving it a verison number each time they make changes. If these files are deleted, they'll lose all of their records! Also, since they have no quick way of seeing what changed between versions of code, they will most likely have to compare everything, including the lines of code that did not change!
+2. Each person has their unique way of setting up the application. This means when a feature doesn't work as expected, it will be difficult to discern if its because of a local issue on someone's computer or if it's an actual software bug.
 
 #### The Approach
 
