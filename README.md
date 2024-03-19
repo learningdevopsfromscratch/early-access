@@ -254,18 +254,22 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
         ```bash
         source venv/bin/activate
         ```
-        7. Run the following commands to run the application
+        7. Install the dependencies by running
+        ```bash
+        pip install -r requirements.txt
+        ```
+        8. Run the following command to run the application
         ```bash
         uvicorn "dog_api:app"
         ```
-        8. You should see something like the following
+        9.  You should see a similar output as shown below
         ```bash
         INFO:     Started server process [53543]
         INFO:     Waiting for application startup.
         INFO:     Application startup complete.
         INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
         ```
-        9. If you open a web browser and go to http://127.0.0.1:8000 , you should see a picture of a dog thats ready to be adopted!
+        10. If you open a web browser and go to http://127.0.0.1:8000 , you should see a picture of a dog thats ready to be adopted!
 
    4. Store the application in the Github repository. Your repository should have the following folder structure.
     ```bash
@@ -279,7 +283,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
 
    6. Create a new file called `README.md` under the `app` directory and add your name to it. Submit this new file into the codebase using the concepts of GitHub flow.
 
-   7. After merging the changes to the *trunk*, create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
+   7. After merging the changes to the *trunk* (aka HEAD or main), create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
 
 2. Local Development
 
@@ -306,6 +310,11 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
       I encourage you to do some research yourself on how others have approached these scenarios.
 
     4. Since our API is built using Python, we will stick with the most straight forward approach and use the public [Python Docker image](https://hub.docker.com/_/python).
+
+    5. Let's write out first Dockerfile
+    ```Dockerfile
+
+    ```
 
 
 
