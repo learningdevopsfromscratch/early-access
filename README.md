@@ -1,6 +1,23 @@
 # DevOps From Scratch (Early Access)
 Author: David Bour, *version: 0.0.2*
 
+- [DevOps From Scratch (Early Access)](#devops-from-scratch-early-access)
+  - [Who is this for?](#who-is-this-for)
+  - [What is DevOps?](#what-is-devops)
+  - [How this Guide Works](#how-this-guide-works)
+  - [The Setup](#the-setup)
+    - [MacOS](#macos)
+    - [Windows](#windows)
+    - [Linux](#linux)
+    - [All Systems](#all-systems)
+  - [A Good First DevOps Task](#a-good-first-devops-task)
+    - [The Scenario](#the-scenario)
+      - [The Analysis](#the-analysis)
+      - [The Approach](#the-approach)
+    - [The Recap](#the-recap)
+  - [Coming Up](#coming-up)
+
+
 ## Who is this for?
 
 This guide is for anyone who is curious about DevOps. Basic knowledge of computers is implied, but we don't expect anything beyond knowing how to *Google* to find resources.
@@ -47,12 +64,13 @@ This section has no code. It's an excercise to get you familiar with your develo
 
 1. Install [Homebrew](https://brew.sh/). *Homebrew* is a package manager that allows you to install software on your Desktop that can easily be removed. This helps with keeping your system clean since you'll be installing a good deal of software.
 
-2. Install Python3
+2. Install Python3 (version 3.11.4)
+> *Note: I tried my best to keep the code compatible with all Python3 versions, so don't worry if you don't have the same exact version listed here.*
 ```bash
 brew install python
 ```
 
-3. Confirm you have Python 3 installed by opening up your *Terminal* and typing `python` or `python3`
+1. Confirm you have Python 3 installed by opening up your *Terminal* and typing `python` or `python3`
 
 You should see something like the following.
 ```bash
@@ -68,7 +86,8 @@ Type in `exit()` to exit the Python interpreter.
 
 1. Install [WSL](https://learn.microsoft.com/en-us/windows/wsl/install). All instructions will be through *bash* so it's imperative you install *WSL*. I recommend choosing *Ubuntu* as your Linux distribution.
 
-2. Install Python3
+2. Install Python3 (version 3.11.4)
+> *Note: I tried my best to keep the code compatible with all Python3 versions, so don't worry if you don't have the same exact version listed here.*
 
 Using the Ubuntu distribution of WSL, install Python using `apt`
 ```bash
@@ -95,7 +114,8 @@ Type in `exit()` to exit the Python interpreter.
 
 1. Linux has a variety of operating systems with many ways to install software. I'm assuming that if you're running Linux, you know how to install packages.
 
-2. Install Python3.
+2. Install Python3 (version 3.11.4).
+> *Note: I tried my best to keep the code compatible with all Python3 versions, so don't worry if you don't have the same exact version listed here.*
 
 ### All Systems
 
@@ -135,7 +155,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
 
 1. Each person is saving backups of older copies of the application by creating a new file and giving it a verison number each time they make changes. If these files are deleted, they'll lose all of their records! Also, since they have no quick way of seeing what changed between versions of code, they will most likely have to compare everything, including the lines of code that did not change!
 
-2. Each person has their unique way of setting up the application. This means when a feature doesn't work as expected, it will be difficult to discern if its because of a local issue on someone's computer or if it's an actual software bug.
+2. Each person has their unique way of setting up the application. This means when a feature doesn't work as expected, it will be difficult to discern if its because of a local configuration issue on someone's computer or if it's an actual software bug.
 
 #### The Approach
 
@@ -259,7 +279,35 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
 
    6. Create a new file called `README.md` under the `app` directory and add your name to it. Submit this new file into the codebase using the concepts of GitHub flow.
 
-   7. After meging the changes to the *trunk*, create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
+   7. After merging the changes to the *trunk*, create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
+
+2. Local Development
+
+   Let's re-visit the following case:
+
+   > *Each person has their unique way of setting up the application. This means when a feature doesn't work as expected, it will be difficult to discern if its because of a local configuration issue on someone's computer or if it's an actual software bug.*
+
+   Creating an efficient software delivery pipeline means providing software developers with a quicker way to test and iterate on their designs. As DevOps practitioners, we can help shorten this design loop by building out what the industry calls a "developer environment". Developer environments come in many forms today, ranging from running locally on a personal laptop to a fully-fledged remote integration environment on the cloud. For our approach, we'll focus on the simplest option, which is optimizing the *local* developer environment.
+
+   In this section, we will explore the usage of *containers* as a technology to help address the issue of reproducibility.
+
+   We can think of containers as segregated computers within your own computer. There is an older technology that is called "Virtual Machines" or VM for short, which shares similarities to containers. We will skip covering VMs for now as they do not provide the the same level of disposability as containers do. When I refer to disposability, I'm emphasizing the fact that containers have a smaller resource footprint on your computer which means we can easily spin up and bring down containers. There are many container engines in the market nowadays such as Docker, containerd, podman, and much more. In this section, we'll stick with one of the most popular options: Docker.
+
+   1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+   2. Read through the [tutorial](https://docs.docker.com/get-started/) on the Docker website to get an understanding of how containers work.
+
+   3. We're going to revisit our "Dog API" application and containerize it. When containerizing an application, there are many things to take into consideration such as
+      1. Which base image should I use?
+      2. How do I label/tag my images?
+      3. Where should I store the image?
+      4. Could I use [multi-stage](https://docs.docker.com/build/building/multi-stage/) builds to optimize the size?
+  
+      I encourage you to do some research yourself on how others have approached these scenarios.
+
+    4. Since our API is built using Python, we will stick with the most straight forward approach and use the public [Python Docker image](https://hub.docker.com/_/python).
+
+
 
 ### The Recap
 
@@ -274,6 +322,7 @@ Here are some questions to help you get started:
 3. What is the benefit of using semver?
 
 Answer these questions and add them to your `README.md` in your Github repository!
+
 
 ## Coming Up
 
