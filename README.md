@@ -378,7 +378,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
         └── requirements.txt
     ```
 
-    4. We now have a way for others to run your application in an easily reproducible way! As long as another person or computer can run Docker, they will be able to replicate the same settings we specified within the `Dockerfile`. This helps with the age-old adage of "It works on my computer!".
+   We now have a way for others to run your application in an easily reproducible way! As long as another person or computer can run Docker, they will be able to replicate the same settings we specified within the `Dockerfile`. This helps with the age-old adage of "It works on my computer!".
 
 
 ### The Recap
