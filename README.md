@@ -367,16 +367,16 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
        3. See the website in action at `http://localhost:8000`
        4. To stop the container, run `docker stop dog-api`
 
-    This is a good stopping point to check our understanding. Please visit the documentation [here](https://docs.docker.com/reference/cli/docker/container/run/) to try to understand what each of the flags are doing.
+     This is a good stopping point to check our understanding. Please visit the documentation [here](https://docs.docker.com/reference/cli/docker/container/run/) to try to understand what each of the flags are doing.
 
   7. Now, let's save our work using `git` and add it to our repository! Push the changes up. You should have the following directory structure now.
-    ```bash
+  ```bash
     └── app
         ├── .gitignore
         ├── Dockerfile
         ├── dog_api.py
         └── requirements.txt
-    ```
+   ```
 
    We now have a way for others to run your application in an easily reproducible way! As long as another person or computer can run Docker, they will be able to replicate the same settings we specified within the `Dockerfile`. This helps with the age-old adage of "It works on my computer!".
 
