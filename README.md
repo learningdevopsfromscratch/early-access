@@ -1,5 +1,24 @@
 # DevOps From Scratch (Early Access)
-Author: David Bour, *version: 0.0.2*
+Author: David Bour, *version: 0.0.3*
+
+- [DevOps From Scratch (Early Access)](#devops-from-scratch-early-access)
+  - [Who is this for?](#who-is-this-for)
+  - [What is DevOps?](#what-is-devops)
+  - [How this Guide Works](#how-this-guide-works)
+  - [The Setup](#the-setup)
+    - [MacOS](#macos)
+    - [Windows](#windows)
+    - [Linux](#linux)
+    - [All Systems](#all-systems)
+  - [A Good First DevOps Task](#a-good-first-devops-task)
+    - [The Scenario](#the-scenario)
+      - [The Analysis](#the-analysis)
+      - [The Approach](#the-approach)
+        - [Version Control](#version-control)
+        - [Local Development](#local-development)
+    - [The Recap](#the-recap)
+  - [Coming Up](#coming-up)
+
 
 ## Who is this for?
 
@@ -47,12 +66,13 @@ This section has no code. It's an excercise to get you familiar with your develo
 
 1. Install [Homebrew](https://brew.sh/). *Homebrew* is a package manager that allows you to install software on your Desktop that can easily be removed. This helps with keeping your system clean since you'll be installing a good deal of software.
 
-2. Install Python3
+2. Install Python3 (version 3.11.4)
+> *Note: I tried my best to keep the code compatible with all Python3 versions, so don't worry if you don't have the same exact version listed here.*
 ```bash
 brew install python
 ```
 
-3. Confirm you have Python 3 installed by opening up your *Terminal* and typing `python` or `python3`
+1. Confirm you have Python 3 installed by opening up your *Terminal* and typing `python` or `python3`
 
 You should see something like the following.
 ```bash
@@ -68,7 +88,8 @@ Type in `exit()` to exit the Python interpreter.
 
 1. Install [WSL](https://learn.microsoft.com/en-us/windows/wsl/install). All instructions will be through *bash* so it's imperative you install *WSL*. I recommend choosing *Ubuntu* as your Linux distribution.
 
-2. Install Python3
+2. Install Python3 (version 3.11.4)
+> *Note: I tried my best to keep the code compatible with all Python3 versions, so don't worry if you don't have the same exact version listed here.*
 
 Using the Ubuntu distribution of WSL, install Python using `apt`
 ```bash
@@ -95,7 +116,8 @@ Type in `exit()` to exit the Python interpreter.
 
 1. Linux has a variety of operating systems with many ways to install software. I'm assuming that if you're running Linux, you know how to install packages.
 
-2. Install Python3.
+2. Install Python3 (version 3.11.4).
+> *Note: I tried my best to keep the code compatible with all Python3 versions, so don't worry if you don't have the same exact version listed here.*
 
 ### All Systems
 
@@ -135,11 +157,11 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
 
 1. Each person is saving backups of older copies of the application by creating a new file and giving it a verison number each time they make changes. If these files are deleted, they'll lose all of their records! Also, since they have no quick way of seeing what changed between versions of code, they will most likely have to compare everything, including the lines of code that did not change!
 
-2. Each person has their unique way of setting up the application. This means when a feature doesn't work as expected, it will be difficult to discern if its because of a local issue on someone's computer or if it's an actual software bug.
+2. Each person has their unique way of setting up the application. This means when a feature doesn't work as expected, it will be difficult to discern if its because of a local configuration issue on someone's computer or if it's an actual software bug.
 
 #### The Approach
 
-1. Version Control
+##### Version Control
 
    The team needs a version control system. We'll use `.git` to version control their application. This saves the team from having to store multiple copies of the file. It also allows the members to then use an external `.git` host such as *Github*.
 
@@ -234,18 +256,22 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
         ```bash
         source venv/bin/activate
         ```
-        7. Run the following commands to run the application
+        7. Install the dependencies by running
+        ```bash
+        pip install -r requirements.txt
+        ```
+        8. Run the following command to run the application
         ```bash
         uvicorn "dog_api:app"
         ```
-        8. You should see something like the following
+        9.  You should see a similar output as shown below
         ```bash
         INFO:     Started server process [53543]
         INFO:     Waiting for application startup.
         INFO:     Application startup complete.
         INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
         ```
-        9. If you open a web browser and go to http://127.0.0.1:8000 , you should see a picture of a dog thats ready to be adopted!
+        10. If you open a web browser and go to http://127.0.0.1:8000 , you should see a picture of a dog thats ready to be adopted!
 
    4. Store the application in the Github repository. Your repository should have the following folder structure.
     ```bash
@@ -259,11 +285,110 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
 
    6. Create a new file called `README.md` under the `app` directory and add your name to it. Submit this new file into the codebase using the concepts of GitHub flow.
 
-   7. After meging the changes to the *trunk*, create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
+   7. After merging the changes to the *trunk* (aka HEAD or main), create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
+
+##### Local Development
+
+   Let's re-visit the following case:
+
+   > *Each person has their unique way of setting up the application. This means when a feature doesn't work as expected, it will be difficult to discern if its because of a local configuration issue on someone's computer or if it's an actual software bug.*
+
+   Creating an efficient software delivery pipeline means providing software developers with a quicker way to test and iterate on their designs. As DevOps practitioners, we can help shorten this design loop by building out what the industry calls a "developer environment". Developer environments come in many forms today, ranging from running locally on a personal laptop to a fully-fledged remote integration environment on the cloud. For our approach, we'll focus on the simplest option, which is optimizing the *local* developer environment.
+
+   In this section, we will explore the usage of *containers* as a technology to help address the issue of reproducibility.
+
+   We can think of containers as segregated computers within your own computer. There is an older technology that is called "Virtual Machines" or VM for short, which shares similarities to containers. We will skip covering VMs for now as they do not provide the the same level of disposability as containers do. When I refer to disposability, I'm emphasizing the fact that containers have a smaller resource footprint on your computer which means we can easily spin up and bring down containers. There are many container engines in the market nowadays such as Docker, containerd, podman, and much more. In this section, we'll stick with one of the most popular options: Docker.
+
+   1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+   2. Read through the [tutorial](https://docs.docker.com/get-started/) on the Docker website to get an understanding of how containers work.
+
+   3. We're going to revisit our "Dog API" application and containerize it. When containerizing an application, there are many things to take into consideration such as
+      1. Which base image should I use?
+      2. How do I label/tag my images?
+      3. Where should I store the image?
+      4. Could I use [multi-stage](https://docs.docker.com/build/building/multi-stage/) builds to optimize the size?
+  
+      I encourage you to do some research yourself on how others have approached these scenarios.
+
+    4. Since our API is built using Python, we will stick with the most straight forward approach and use the public [Python Docker image](https://hub.docker.com/_/python).
+
+    5. Let's create a Dockerfile inside the same directory `app`.
+    ```bash
+    touch Dockerfile
+    ```
+
+    Within the `Dockerfile`, let's add some content. Everything with the `#` is a code comment which means it will not be interpreted. You can choose to leave out the comments if you wish.
+    ```Dockerfile
+    # This is 'platform' or 'base image' that we're using
+    # to construct our Dockerfile. Most of the Python base images
+    # run on the Linux operating system, Debian. We could have
+    # used the Debian image as well such as https://hub.docker.com/_/debian
+    # but we would have to install extra components to get Python to work.
+    # Instead, we use the Python variant which is in fact another Dockerfile
+    # under the hood that sets up all of the dependencies that we can further
+    # add upon.
+    FROM python:3.11-slim
+
+    # This creates a directory called 'app' in the root. If you need more
+    # help in understanding what 'root' means, visit the following resource
+    # https://www.linuxfoundation.org/blog/blog/classic-sysadmin-the-linux-filesystem-explained
+    WORKDIR /app
+
+    # This copies the requirements.txt folder from our computer and transfers
+    # it into the path app/requirements.txt. We didn't need to specify /app/requirements
+    # since the prior step "WORKDIR /app" changes the context and places us into
+    # that folder already.
+    COPY requirements.txt requirements.txt
+
+    # This runs the pip command to install our dependencies.
+    RUN pip install -r requirements.txt
+
+    # This does another copy, but when you see a dot '.', it means to
+    # copy everything in your current location. So this translate to
+    # copy everything relative to my Docker context and place it in
+    # the current directory within Docker which happens to be /app
+    COPY . .
+
+    # This runs the uvicorn command which is a webserver that hosts
+    # our application. Notice how we had to specify --host=0.0.0.0
+    # Without going into too much details about networking, know that
+    # this allows connections from outside of the container to
+    # communicate with our server within the container. By default,
+    # the host is 127.0.0.1 which means you would have to be INSIDE
+    # of the container to access the uvicorn webserver.
+    CMD [ "uvicorn", "dog_api:app", "--host=0.0.0.0" ]
+    ```
+
+    6. Let's build the Docker container. Make sure Docker   Desktop is running. Run the following commands within the `app` directory:
+  
+       1. ```docker build -t dog-api:v1 .```
+       2. ```docker run -d --name dog-api -p 8000:8000 dog-api:v1```
+       3. See the website in action at `http://localhost:8000`
+       4. To stop the container, run `docker stop dog-api`
+
+    This is a good stopping point to check our understanding. Please visit the documentation [here](https://docs.docker.com/reference/cli/docker/container/run/) to try to understand what each of the flags are doing.
+
+    7. Now, let's save our work using `git` and add it to our repository! Push the changes up. You should have the following directory structure now.
+    ```bash
+    └── app
+        ├── .gitignore
+        ├── Dockerfile
+        ├── dog_api.py
+        └── requirements.txt
+    ```
+
+    8. We now have a way for others to run your application in an easily reproducible way! As long as another person or computer can run Docker, they will be able to replicate the same settings we specified within the `Dockerfile`. This helps with the age-old adage of "It works on my computer!".
+
 
 ### The Recap
 
-In this section, we've taken a loosely defined problem statement and broke it down into actionable tasks. We created our first remote `.git` repository and now have the code in version control. We also got to choose a *branching* strategy for the development team to help streamline their workflow so they can more predictably release software. Now its time for you to write up a summary of the great work you've accomplished!
+In this section, we've taken a loosely defined problem statement and broke it down into actionable tasks. We created our first remote `.git` repository and now have the code in version control. We also got to choose a *branching* strategy for the development team to help streamline their workflow so they can more predictably release software. 
+
+After getting our code stored safely, we dove into *containerization* to help ease the efforts of local development. Containerization will also play a significant role in future sections as we launch our application live!
+
+
+Now its time for you to write up a summary of the great work you've accomplished!
 
 Here are some questions to help you get started:
 
@@ -273,9 +398,15 @@ Here are some questions to help you get started:
 
 3. What is the benefit of using semver?
 
+4. What are the benefits of using a container?
+
+5. What is the difference between a container and a virtual machine (VM)?
+
 Answer these questions and add them to your `README.md` in your Github repository!
+
 
 ## Coming Up
 
-1. Local development; how to keep everyone in sync when working on their own computer
-2. Unit testing in the Continuous Integration pipeline
+1. Unit testing in the Continuous Integration pipeline
+2. Building and storing our Docker container images
+3. Versioning our Docker container images
