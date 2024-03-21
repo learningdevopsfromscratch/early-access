@@ -273,19 +273,19 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
         ```
         10. If you open a web browser and go to http://127.0.0.1:8000 , you should see a picture of a dog thats ready to be adopted!
 
-   4. Store the application in the Github repository. Your repository should have the following folder structure.
-    ```bash
-    app
-    ├── dog_api.py
-    └── requirements.txt
-    └── .gitignore
-    ```
+        11. Store the application in the Github repository. Your repository should have the following folder structure.
+        ```bash
+        app
+        ├── dog_api.py
+        └── requirements.txt
+        └── .gitignore
+        ```
 
-   5. Version control alas! The last step is to provide the team with guidance on a branching strategy. There are many different branching strategies such as Gitflow, GitHub Flow, and Trunk Based Development. Read more about each strategy [here](https://launchdarkly.com/blog/git-branching-strategies-vs-trunk-based-development/). Since the team is still pretty new to DevOps practices, you decided to go with GitHub flow as the recommended approach.
+         12. Version control alas! The last step is to provide the team with guidance on a branching strategy. There are many different branching strategies such as Gitflow, GitHub Flow, and Trunk Based Development. Read more about each strategy [here](https://launchdarkly.com/blog/git-branching-strategies-vs-trunk-based-development/). Since the team is still pretty new to DevOps practices, you decided to go with GitHub flow as the recommended approach.
 
-   6. Create a new file called `README.md` under the `app` directory and add your name to it. Submit this new file into the codebase using the concepts of GitHub flow.
+         13. Create a new file called `README.md` under the `app` directory and add your name to it. Submit this new file into the codebase using the concepts of GitHub flow.
 
-   7. After merging the changes to the *trunk* (aka HEAD or main), create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
+         14. After merging the changes to the *trunk* (aka HEAD or main), create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
 
 ##### Local Development
 
@@ -311,9 +311,9 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
   
       I encourage you to do some research yourself on how others have approached these scenarios.
 
-    4. Since our API is built using Python, we will stick with the most straight forward approach and use the public [Python Docker image](https://hub.docker.com/_/python).
+ 4. Since our API is built using Python, we will stick with the most straight forward approach and use the public [Python Docker image](https://hub.docker.com/_/python).
 
-    5. Let's create a Dockerfile inside the same directory `app`.
+ 5. Let's create a Dockerfile inside the same directory `app`.
     ```bash
     touch Dockerfile
     ```
@@ -360,7 +360,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
     CMD [ "uvicorn", "dog_api:app", "--host=0.0.0.0" ]
     ```
 
-    6. Let's build the Docker container. Make sure Docker   Desktop is running. Run the following commands within the `app` directory:
+  6. Let's build the Docker container. Make sure Docker   Desktop is running. Run the following commands within the `app` directory:
   
        1. ```docker build -t dog-api:v1 .```
        2. ```docker run -d --name dog-api -p 8000:8000 dog-api:v1```
@@ -369,7 +369,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
 
     This is a good stopping point to check our understanding. Please visit the documentation [here](https://docs.docker.com/reference/cli/docker/container/run/) to try to understand what each of the flags are doing.
 
-    7. Now, let's save our work using `git` and add it to our repository! Push the changes up. You should have the following directory structure now.
+  7. Now, let's save our work using `git` and add it to our repository! Push the changes up. You should have the following directory structure now.
     ```bash
     └── app
         ├── .gitignore
@@ -378,7 +378,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
         └── requirements.txt
     ```
 
-    8. We now have a way for others to run your application in an easily reproducible way! As long as another person or computer can run Docker, they will be able to replicate the same settings we specified within the `Dockerfile`. This helps with the age-old adage of "It works on my computer!".
+    4. We now have a way for others to run your application in an easily reproducible way! As long as another person or computer can run Docker, they will be able to replicate the same settings we specified within the `Dockerfile`. This helps with the age-old adage of "It works on my computer!".
 
 
 ### The Recap
