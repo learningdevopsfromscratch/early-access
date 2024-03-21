@@ -14,6 +14,8 @@ Author: David Bour, *version: 0.0.2*
     - [The Scenario](#the-scenario)
       - [The Analysis](#the-analysis)
       - [The Approach](#the-approach)
+        - [Version Control](#version-control)
+        - [Local Development](#local-development)
     - [The Recap](#the-recap)
   - [Coming Up](#coming-up)
 
@@ -159,7 +161,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
 
 #### The Approach
 
-1. Version Control
+##### Version Control
 
    The team needs a version control system. We'll use `.git` to version control their application. This saves the team from having to store multiple copies of the file. It also allows the members to then use an external `.git` host such as *Github*.
 
@@ -285,7 +287,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
 
    7. After merging the changes to the *trunk* (aka HEAD or main), create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
 
-2. Local Development
+##### Local Development
 
    Let's re-visit the following case:
 
@@ -311,16 +313,82 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
 
     4. Since our API is built using Python, we will stick with the most straight forward approach and use the public [Python Docker image](https://hub.docker.com/_/python).
 
-    5. Let's write out first Dockerfile
-    ```Dockerfile
-
+    5. Let's create a Dockerfile inside the same directory `app`.
+    ```bash
+    touch Dockerfile
     ```
 
+    Within the `Dockerfile`, let's add some content. Everything with the `#` is a code comment which means it will not be interpreted. You can choose to leave out the comments if you wish.
+    ```Dockerfile
+    # This is 'platform' or 'base image' that we're using
+    # to construct our Dockerfile. Most of the Python base images
+    # run on the Linux operating system, Debian. We could have
+    # used the Debian image as well such as https://hub.docker.com/_/debian
+    # but we would have to install extra components to get Python to work.
+    # Instead, we use the Python variant which is in fact another Dockerfile
+    # under the hood that sets up all of the dependencies that we can further
+    # add upon.
+    FROM python:3.11-slim
+
+    # This creates a directory called 'app' in the root. If you need more
+    # help in understanding what 'root' means, visit the following resource
+    # https://www.linuxfoundation.org/blog/blog/classic-sysadmin-the-linux-filesystem-explained
+    WORKDIR /app
+
+    # This copies the requirements.txt folder from our computer and transfers
+    # it into the path app/requirements.txt. We didn't need to specify /app/requirements
+    # since the prior step "WORKDIR /app" changes the context and places us into
+    # that folder already.
+    COPY requirements.txt requirements.txt
+
+    # This runs the pip command to install our dependencies.
+    RUN pip install -r requirements.txt
+
+    # This does another copy, but when you see a dot '.', it means to
+    # copy everything in your current location. So this translate to
+    # copy everything relative to my Docker context and place it in
+    # the current directory within Docker which happens to be /app
+    COPY . .
+
+    # This runs the uvicorn command which is a webserver that hosts
+    # our application. Notice how we had to specify --host=0.0.0.0
+    # Without going into too much details about networking, know that
+    # this allows connections from outside of the container to
+    # communicate with our server within the container. By default,
+    # the host is 127.0.0.1 which means you would have to be INSIDE
+    # of the container to access the uvicorn webserver.
+    CMD [ "uvicorn", "dog_api:app", "--host=0.0.0.0" ]
+    ```
+
+    6. Let's build the Docker container. Make sure Docker   Desktop is running. Run the following commands within the `app` directory:
+  
+       1. ```docker build -t dog-api:v1 .```
+       2. ```docker run -d --name dog-api -p 8000:8000 dog-api:v1```
+       3. See the website in action at `http://localhost:8000`
+       4. To stop the container, run `docker stop dog-api`
+
+    This is a good stopping point to check our understanding. Please visit the documentation [here](https://docs.docker.com/reference/cli/docker/container/run/) to try to understand what each of the flags are doing.
+
+    7. Now, let's save our work using `git` and add it to our repository! Push the changes up. You should have the following directory structure now.
+    ```bash
+    └── app
+        ├── .gitignore
+        ├── Dockerfile
+        ├── dog_api.py
+        └── requirements.txt
+    ```
+
+    8. We now have a way for others to run your application in an easily reproducible way! As long as another person or computer can run Docker, they will be able to replicate the same settings we specified within the `Dockerfile`. This helps with the age-old adage of "It works on my computer!".
 
 
 ### The Recap
 
-In this section, we've taken a loosely defined problem statement and broke it down into actionable tasks. We created our first remote `.git` repository and now have the code in version control. We also got to choose a *branching* strategy for the development team to help streamline their workflow so they can more predictably release software. Now its time for you to write up a summary of the great work you've accomplished!
+In this section, we've taken a loosely defined problem statement and broke it down into actionable tasks. We created our first remote `.git` repository and now have the code in version control. We also got to choose a *branching* strategy for the development team to help streamline their workflow so they can more predictably release software. 
+
+After getting our code stored safely, we dove into *containerization* to help ease the efforts of local development. Containerization will also play a significant role in future sections as we launch our application live!
+
+
+Now its time for you to write up a summary of the great work you've accomplished!
 
 Here are some questions to help you get started:
 
@@ -335,5 +403,6 @@ Answer these questions and add them to your `README.md` in your Github repositor
 
 ## Coming Up
 
-1. Local development; how to keep everyone in sync when working on their own computer
-2. Unit testing in the Continuous Integration pipeline
+1. Unit testing in the Continuous Integration pipeline
+2. Building and storing our Docker container images
+3. Versioning our Docker container images
