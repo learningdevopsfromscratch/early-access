@@ -398,6 +398,10 @@ Here are some questions to help you get started:
 
 3. What is the benefit of using semver?
 
+4. What are the benefits of using a container?
+
+5. What is the difference between a container and a virtual machine (VM)?
+
 Answer these questions and add them to your `README.md` in your Github repository!
 
 
