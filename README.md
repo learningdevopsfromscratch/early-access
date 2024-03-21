@@ -1,5 +1,5 @@
 # DevOps From Scratch (Early Access)
-Author: David Bour, *version: 0.0.2*
+Author: David Bour, *version: 0.0.3*
 
 - [DevOps From Scratch (Early Access)](#devops-from-scratch-early-access)
   - [Who is this for?](#who-is-this-for)
