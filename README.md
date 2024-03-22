@@ -1,5 +1,5 @@
 # DevOps From Scratch (Early Access)
-Author: David Bour, *version: 0.0.3*
+Author: David Bour, *version: 0.0.4*
 
 - [DevOps From Scratch (Early Access)](#devops-from-scratch-early-access)
   - [Who is this for?](#who-is-this-for)
@@ -12,11 +12,17 @@ Author: David Bour, *version: 0.0.3*
     - [All Systems](#all-systems)
   - [A Good First DevOps Task](#a-good-first-devops-task)
     - [The Scenario](#the-scenario)
-      - [The Analysis](#the-analysis)
-      - [The Approach](#the-approach)
-        - [Version Control](#version-control)
-        - [Local Development](#local-development)
+    - [The Analysis](#the-analysis)
+    - [The Approach](#the-approach)
+      - [Version Control](#version-control)
+      - [Local Development](#local-development)
     - [The Recap](#the-recap)
+  - [Build. Test. Break. Repeat.](#build-test-break-repeat)
+    - [The Scenario](#the-scenario-1)
+    - [The Analysis](#the-analysis-1)
+    - [The Approach](#the-approach-1)
+      - [Unit Testing](#unit-testing)
+    - [The Recap](#the-recap-1)
   - [Coming Up](#coming-up)
 
 
@@ -122,12 +128,14 @@ Type in `exit()` to exit the Python interpreter.
 ### All Systems
 
 1. Install [Visual Studio Code](https://code.visualstudio.com/). This is where we'll write our code and configurations.
-2. Create an account on [Github](https://github.com/). Github is a useful *version control system* based on *git* where we save and share our code.
-  - Resources to get started with `git`. *Note:* DO NOT SKIP THIS! This is vital to our software pipeline.
+2. Install *git*
+   1. https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+   2. Resources to get started with *git*. **Note:** DO NOT SKIP THIS. *git* is vital to our software pipeline.
       1. Learning git - https://docs.github.com/en/get-started/getting-started-with-git
       2. Interactive learning - https://learngitbranching.js.org/
-3. Install [Docker](https://docs.docker.com/engine/install/). *Docker* is used to manage container images. You don't have to know more at the moment beyond the fact that *Docker* will be used to house our applications so they run the same on anyone's computer, including ones running in the cloud such as AWS (Amazon Web Services).
-4. Install [Python 3](https://www.python.org/downloads/). Many applications and tools we'll be using will be centered around Python.
+3. Create an account on [Github](https://github.com/). Github is a useful *version control system* based on *git* where we save and share our code remotely.
+
+4. Install [Docker](https://docs.docker.com/engine/install/). *Docker* is used to manage container images. You don't have to know more at the moment beyond the fact that *Docker* will be used to house our applications so they run the same on anyone's computer, including ones running in the cloud such as AWS (Amazon Web Services).
 
 ## A Good First DevOps Task
 
@@ -151,25 +159,43 @@ If you recall, we're going to center the teachings of DevOps principles around t
 
 You've recently joined a software team that has developed an application displaying dogs up for adoption at a local shelter. Each team member has their own way of setting up a local developer environment to run the web application locally. Currently, they are sharing their code through email, so whenever a member changes something, another member has to review each change line by line. Each time a team member makes a change, they save the file with a new version number to have a historical backup of what worked. This process is lengthy and highly error-prone.
 
-#### The Analysis
+### The Analysis
 
-After rubbing your eyes in disbelief, you come to realize they have no *continuous integration* in place. As you come to grips with the situation, you come up with the following conclusions:
+After rubbing your eyes in disbelief, you come to realize they have no *software development practices* in place. As you come to grips with the situation, you come up with the following conclusions:
 
-1. Each person is saving backups of older copies of the application by creating a new file and giving it a verison number each time they make changes. If these files are deleted, they'll lose all of their records! Also, since they have no quick way of seeing what changed between versions of code, they will most likely have to compare everything, including the lines of code that did not change!
+1. Each person is saving backups of older copies of the application by creating a new file and giving it a version number each time they make changes. If these files are deleted, they'll lose all of their records! Also, since they have no quick way of seeing what changed between versions of code, they will most likely have to compare everything, including the lines of code that did not change!
 
 2. Each person has their unique way of setting up the application. This means when a feature doesn't work as expected, it will be difficult to discern if its because of a local configuration issue on someone's computer or if it's an actual software bug.
 
-#### The Approach
+### The Approach
 
-##### Version Control
+#### Version Control
 
    The team needs a version control system. We'll use `.git` to version control their application. This saves the team from having to store multiple copies of the file. It also allows the members to then use an external `.git` host such as *Github*.
 
-   1. Create a [Github Repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories) and give it a name such as `dog-api`
-   2. Create three files
-      1. **Filename**: dog_app.py
+   Remember when I mentioned to not skip the `.git` lessons? If you missed that, please take some time and invest in learning more about it. Here are some recommended resources
+   
+  - [Learning git](https://docs.github.com/en/get-started/getting-started-with-git)
+  - [Git Interactive learning](https://learngitbranching.js.org/)
 
-      This is our application that will show a picture of a random dog. API is courtesy from https://dog.ceo/dog-api.
+   Let's get our Github Repository set up.
+
+   1. Create an empty directory called `dog-api`
+   ```bash
+   mkdir dog-api
+   ```
+
+   2. Create a [Github Repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories) and give it a name such as `dog-api`. Make sure the repository is set to *public*. We want to show it off after all!
+
+   3. In your `dog-api` directory, follow the instructions on how to setup a new Github repository. *Hint*: it starts with `git init`.
+
+   3. Next, we'll be creating three files 
+      1. **Filename**: dog_api.py
+      ```bash
+      mkdir dog_api.py
+      ```
+
+      Add the following contents to `dog_api.py`
       ```python
         from fastapi import FastAPI, HTTPException
         from fastapi.responses import HTMLResponse
@@ -201,7 +227,14 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
             raise HTTPException(status_code=500, detail=str(e))
       ```
 
+      This is our application that will show a picture of a random dog. API is courtesy from https://dog.ceo/dog-api.
+
       2. **Filename**: requirements.txt
+      ```bash
+      mkdir requirements.txt
+      ```
+
+      Add the following contents to `requirements.txt`
 
         ```bash
         annotated-types==0.6.0
@@ -228,52 +261,50 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
         websockets==12.0
         ```
 
+        This file is a list of dependencies that our application needs to run.
+
       3. **Filename**: .gitignore (yes, there's a dot in front). Learn more about .gitignore [here](https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files).
       ```bash
-      venv/
-      _pycache__/
+      mkdir .gitignore
       ```
 
-   3. To run the application locally, do the following on the command line
-        1. Create a directory called `app`
+      Add the following contents to `.gitignore`
+      ```bash
+      venv/
+      __pycache__/
+      ```
+
+   4. To run the application locally, do the following on the command line
+        1. Go to the `dog-api` directory
         ```bash
-        mkdir app
+        cd dog-api
         ```
-        2. Go into the `app` directory
-        ```bash
-        cd app
-        ```
-        3. Create three files
-        ```bash
-        touch dog_api.py requirements.txt .gitignore
-        ```
-        4. Copy and paste the content from the earlier step above into their respective files
-        5. Create a [Python virtual environment](https://docs.python.org/3/library/venv.html). This is used to keep the Python dependencies on your system clean. Read more [here](https://docs.python.org/3/library/venv.html).
+        2. Create a [Python virtual environment](https://docs.python.org/3/library/venv.html). This is used to keep the Python dependencies on your system clean. Read more [here](https://docs.python.org/3/library/venv.html).
         ```bash
         python3 -m venv venv
         ```
-        6. Activate the virtual environment
+        3. Activate the virtual environment
         ```bash
         source venv/bin/activate
         ```
-        7. Install the dependencies by running
+        4. Install the dependencies by running
         ```bash
         pip install -r requirements.txt
         ```
-        8. Run the following command to run the application
+        5. Run the following command to run the application
         ```bash
         uvicorn "dog_api:app"
         ```
-        9.  You should see a similar output as shown below
+        6.  You should see a similar output as shown below
         ```bash
         INFO:     Started server process [53543]
         INFO:     Waiting for application startup.
         INFO:     Application startup complete.
         INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
         ```
-        10. If you open a web browser and go to http://127.0.0.1:8000 , you should see a picture of a dog thats ready to be adopted!
+        7.  If you open a web browser and go to http://127.0.0.1:8000 , you should see a picture of a dog thats ready to be adopted!
 
-        11. Store the application in the Github repository. Your repository should have the following folder structure.
+        8.  Store the application in the Github repository. Your repository should have the following folder structure.
         ```bash
         app
         ├── dog_api.py
@@ -281,13 +312,13 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
         └── .gitignore
         ```
 
-         12. Version control alas! The last step is to provide the team with guidance on a branching strategy. There are many different branching strategies such as Gitflow, GitHub Flow, and Trunk Based Development. Read more about each strategy [here](https://launchdarkly.com/blog/git-branching-strategies-vs-trunk-based-development/). Since the team is still pretty new to DevOps practices, you decided to go with GitHub flow as the recommended approach.
+         9.  Version control alas! The last step is to provide the team with guidance on a branching strategy. There are many different branching strategies such as Gitflow, GitHub Flow, and Trunk Based Development. Read more about each strategy [here](https://launchdarkly.com/blog/git-branching-strategies-vs-trunk-based-development/). Since the team is still pretty new to DevOps practices, you decided to go with GitHub flow as the recommended approach.
 
-         13. Create a new file called `README.md` under the `app` directory and add your name to it. Submit this new file into the codebase using the concepts of GitHub flow.
+         10. Create a new file called `README.md` under the `app` directory and add your name to it. Submit this new file into the codebase using the concepts of GitHub flow.
 
-         14. After merging the changes to the *trunk* (aka HEAD or main), create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
+         11. After merging the changes to the *trunk* (aka HEAD or main), create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
 
-##### Local Development
+#### Local Development
 
    Let's re-visit the following case:
 
@@ -369,9 +400,9 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
 
      This is a good stopping point to check our understanding. Please visit the documentation [here](https://docs.docker.com/reference/cli/docker/container/run/) to try to understand what each of the flags are doing.
 
-  7. Now, let's save our work using `git` and add it to our repository! Push the changes up. You should have the following directory structure now.
+  7. Now, let's save our work using `git` commit and add it to our repository! Push the changes up. You should have the following directory structure now.
   ```bash
-    └── app
+    └── dog-api
         ├── .gitignore
         ├── Dockerfile
         ├── dog_api.py
@@ -379,7 +410,6 @@ After rubbing your eyes in disbelief, you come to realize they have no *continuo
    ```
 
    We now have a way for others to run your application in an easily reproducible way! As long as another person or computer can run Docker, they will be able to replicate the same settings we specified within the `Dockerfile`. This helps with the age-old adage of "It works on my computer!".
-
 
 ### The Recap
 
@@ -403,6 +433,166 @@ Here are some questions to help you get started:
 5. What is the difference between a container and a virtual machine (VM)?
 
 Answer these questions and add them to your `README.md` in your Github repository!
+
+
+## Build. Test. Break. Repeat.
+
+You did it! You optimized the time it took to iterate locally when developing code and had a much more effective pipeline. Remember, every optimization can pay huge dividends when it comes to the entire software development pipeline. Let's check where we're at:
+
+1. Software Development (Software Development Lifecycle)
+    - Local Development ✅
+
+2. Build Step (Continuous Integration) ⬅️ *Next Section*
+    - Unit Testing
+    - Integration Testing
+    - Artifact Management
+    - Code Quality Scans
+
+3. Deploy Step (Continuous Delivery/Deployment)
+    - Infrastructure Setup
+    - Environment Setup
+    - Observability
+
+### The Scenario
+
+The team is operating at 10x efficiency now with the new approach to local development. The issue now is they have no clue how or where to host their application so they can share it with the world. They are wondering if they should look into a cloud provider such as AWS (Amazon Web Services), GCP (Google Cloud Provider), Azure (Microsoft Azure), or something with less options such as Digital Ocean. Also, once they choose a provider, how does the process look like to host the application?
+
+### The Analysis
+
+What we see here is the team is missing a pipeline to ship their code from their local computers to an external location. We can generalize most software projects using two concepts, CI (Continuous Integration) and CD (Continuous Delivery/Deployment). CI always precedes CD which is what we'll focus on first. We can think of the CI process as the step that builds, tests, and uploads our program so our CD process can use it to deliver it to our host. What we'll suggest the team is to first focus on CI because we can't do CD without it!
+
+If we break down the CI process, we see it has some common steps
+
+  1. Unit Testing - this step involves running tests against our code every time we add a new feature to ensure our code behaves as we expect.
+  2. Integration Testing - integration testing is a level above unit testing where we're now testing two or more functions that collaborate together or a function with an external system such as a database interaction.
+  3. Artifact Management - once we package our code as either a binary or container image, we need to store it into a location where our CD process can pull it.
+  4. Code Quality Scans - Quality scans can include checking for syntax, security vulnerabilities, or test coverage.
+
+### The Approach
+
+#### Unit Testing
+
+Unit testing at is core is testing a basic functionality of our application. Looking back our example Python application, we have not written any unit tests yet, so let's begin with that.
+
+1. Let's go to our directory `dog-api` and a file where we'll add our unit tests.
+   ```bash
+   # Creates a file named 'dog_test.py'
+   touch dog_test.py
+   ```
+
+2. We will now also install a testing framework called Pytest to run tests against our application. Before installing, let's activate a virtual environment. If you missed the virtual section portion, please refer back to **Step 3** under [version control](#version-control) section.
+   
+   1. Create the virtual environment folder if there is none.
+      ```bash
+      python3 -m venv venv
+      ```
+   2. Activate the virtual environment.
+      ```bash
+      source venv/bin/activate
+      ```
+   3. Install the Pytest framework.
+      ```bash
+      pip install pytest
+      ```
+   4. Install the httpx library for testing our web requests in FastAPI.
+      ```bash
+      pip install httpx
+      ```
+   5. Save the requirement into your `requirements.txt` file.
+      ```bash
+      pip freeze > requirements.txt
+      ```
+   6. Your `requirements.txt` file should look something as follows:
+      ```
+      annotated-types==0.6.0
+      anyio==4.3.0
+      certifi==2024.2.2
+      charset-normalizer==3.3.2
+      click==8.1.7
+      fastapi==0.110.0
+      h11==0.14.0
+      httpcore==1.0.4
+      httptools==0.6.1
+      httpx==0.27.0
+      idna==3.6
+      iniconfig==2.0.0
+      packaging==24.0
+      pluggy==1.4.0
+      pydantic==2.6.3
+      pydantic_core==2.16.3
+      pytest==8.1.1
+      python-dotenv==1.0.1
+      PyYAML==6.0.1
+      requests==2.31.0
+      sniffio==1.3.1
+      starlette==0.36.3
+      typing_extensions==4.10.0
+      urllib3==2.2.1
+      uvicorn==0.28.0
+      uvloop==0.19.0
+      watchfiles==0.21.0
+      websockets==12.0
+      ```
+
+3. Let's also update our `.gitignore` to ignore `.pytest_cache`. It's a good practice to ignore things we don't need to version control to keep our code repository clean.
+    ```
+    venv/
+    __pycache__/
+    .pytest_cache
+    ```
+
+4. Open up the `dog_test.py` file and add the following contents:
+
+    ```python
+    from fastapi.testclient import TestClient
+    from dog_api import app
+
+    client = TestClient(app)
+
+    def test_can_reach_health_endpoint():
+        response = client.get('/health')
+        assert response.status_code == 200
+
+    def test_health_endpoint_returns_expected_msg():
+        response = client.get('/health')
+        assert response.text == '"healthy"'
+
+    def test_can_reach_dog_endpoint():
+        response = client.get('/')
+        assert response.status_code == 200
+    ```
+    Don't get too caught up in the code. Just know that this code is running three unit tests which are checking if we can perform requests to our web server without receiving an error. If you'd like to learn more about Pytest, please see the docs [here](https://docs.pytest.org/en/8.0.x/). If you're interested in testing in general, I recommend reading this [resource](https://www.obeythetestinggoat.com/).
+  5. From the root directory `dog-api`, run `pytest`. You should see something similar to the results below
+  ```python
+  ============================================================= warnings summary =============================================================
+  venv/lib/python3.11/site-packages/httpx/_client.py:680
+    /Users/dbour/Projects/devops-from-scratch/early-content/devopsfromscratch/examples/app/venv/lib/python3.11/site-packages/httpx/_client.py:680: DeprecationWarning: The 'app' shortcut is now deprecated. Use the explicit style 'transport=WSGITransport(app=...)' instead.
+      warnings.warn(message, DeprecationWarning)
+
+  -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+  ========================================================
+  3 passed, 1 warning in 1.34s ========================================================
+  ```
+  This is just saying our three tests has passed. Try breaking the test by making changes to our `dog_api.py` health endpoint such as making it return `bacon` instead of `"healthy"`.
+
+  Here's an example
+  ```python
+  @app.get("/health")
+  async def health():
+    return "bacon"
+  ```
+
+  6. Now that we have a local unit test running, we can now start looking into into our first CI pipeline. Since we are using Github as our source control, we'll go with the easiest option and use [Github Actions](https://docs.github.com/en/actions).
+
+      You can think of Github Actions as a platform to interact with an external computer which has tight integrations with your Github repository. The fact that Github Actions runs external computers under the hood means you can run arbitrary code such as the unit test we wrote above and capture those results. We can take it one step further and take action on that result such as preventing merges to the main or trunk branch if the new code changes introduced do not pass our unit test.
+
+ 7. In the next few sections, I'll only introduce enough Github Action concepts to get us through. The main goal is to understand the software delivery pipeline and not get caught up with the nuances of Github Actions. If you'd like to learn more about Github Actions, please refer to the documents [here](https://docs.github.com/en/actions).
+
+    The majority of the code written will attempt to be as Github Actions agnostic as possible. The practice of writing platform agnostic code is not always feasible, but it makes our pipeline less beholden to a specific company's product; imagine a scenario where Github Actions starts charging more than you can afford while there are cheaper competitors.
+
+ 8. The first step to create a Github Actions is to create a directory named `.github` in the root directory of your repository. Our root directory is `dog-api`.
+
+### The Recap
 
 
 ## Coming Up
