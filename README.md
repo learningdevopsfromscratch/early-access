@@ -590,7 +590,15 @@ Unit testing at is core is testing a basic functionality of our application. Loo
 
     The majority of the code written will attempt to be as Github Actions agnostic as possible. The practice of writing platform agnostic code is not always feasible, but it makes our pipeline less beholden to a specific company's product; imagine a scenario where Github Actions starts charging more than you can afford while there are cheaper competitors.
 
- 8. The first step to create a Github Actions is to create a directory named `.github` in the root directory of your repository. Our root directory is `dog-api`.
+ 8. The first step to create a Github Actions is to create a directory named `.github` in the root directory of your repository. Our root directory is `dog-api`. Under `.github`, create another directory called `workflows`.
+    ```bash
+    mkdir -p .github/workflows
+    ```
+ 9. Create a file named `ci.yaml` under `.github/workflows`.
+    ```bash
+    touch ci.yaml
+    ```
+10. 
 
 ### The Recap
 
