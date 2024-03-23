@@ -9,7 +9,7 @@ def test_can_reach_health_endpoint():
 
 def test_health_endpoint_returns_expected_msg():
     response = client.get('/health')
-    assert response.text == '"healthy"'
+    assert response.text == '"woof"'
 
 def test_can_reach_dog_endpoint():
     response = client.get('/')

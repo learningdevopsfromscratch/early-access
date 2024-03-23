@@ -8,7 +8,7 @@ DOG_API_URL = "https://dog.ceo/api/breeds/image/random"
 
 @app.get("/health")
 async def health():
-    return "healthy"
+    return "woof"
 
 @app.get("/", response_class=HTMLResponse)
 async def get_random_dog():
