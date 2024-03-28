@@ -1,5 +1,5 @@
 # DevOps From Scratch (Early Access)
-Author: David Bour, *version: 0.0.4*
+Author: David Bour, *version: 0.0.5*
 
 - [DevOps From Scratch (Early Access)](#devops-from-scratch-early-access)
   - [Who is this for?](#who-is-this-for)
@@ -461,18 +461,18 @@ The team is operating at 10x efficiency now with the new approach to local devel
 
 What we see here is the team is missing a pipeline to ship their code from their local computers to an external location. We can generalize most software projects using two concepts, CI (Continuous Integration) and CD (Continuous Delivery/Deployment). CI always precedes CD which is what we'll focus on first. We can think of the CI process as the step that builds, tests, and uploads our program so our CD process can use it to deliver it to our host. What we'll suggest the team is to first focus on CI because we can't do CD without it!
 
-If we break down the CI process, we see it has some common steps
+If we break down the CI process, we see it has some core steps: 
 
   1. Unit Testing - this step involves running tests against our code every time we add a new feature to ensure our code behaves as we expect.
   2. Integration Testing - integration testing is a level above unit testing where we're now testing two or more functions that collaborate together or a function with an external system such as a database interaction.
   3. Artifact Management - once we package our code as either a binary or container image, we need to store it into a location where our CD process can pull it.
-  4. Code Quality Scans - Quality scans can include checking for syntax, security vulnerabilities, or test coverage.
+  4. Code Quality Scans - Quality scans can include checking for syntax, security vulnerabilities, and/or test coverage.
 
 ### The Approach
 
 #### Unit Testing
 
-Unit testing at is core is testing a basic functionality of our application. Looking back our example Python application, we have not written any unit tests yet, so let's begin with that.
+Unit testing at its core is testing a basic functionality of our application. Looking back at our example Python application, we have not written any unit tests yet, so let's begin with that.
 
 1. Let's go to our directory `dog-api` and a file where we'll add our unit tests.
    ```bash
@@ -590,13 +590,93 @@ Unit testing at is core is testing a basic functionality of our application. Loo
 
     The majority of the code written will attempt to be as Github Actions agnostic as possible. The practice of writing platform agnostic code is not always feasible, but it makes our pipeline less beholden to a specific company's product; imagine a scenario where Github Actions starts charging more than you can afford while there are cheaper competitors.
 
- 8. The first step to create a Github Actions is to create a directory named `.github` in the root directory of your repository. Our root directory is `dog-api`.
+ 8. The first step to create a Github Actions is to create a directory named `.github` in the root directory of your repository. Our root directory is `dog-api`. Under `.github`, create another directory called `workflows`.
+    ```bash
+    mkdir -p .github/workflows
+    ```
+ 9. Create a file named `ci.yaml` under `.github/workflows`.
+    ```bash
+    touch ci.yaml
+    ```
+10. In the `ci.yaml`, add the following content. Read the comments which are preceded by the `#` symbol to get an understanding of what each step is doing. The result of this file is we'll have a way to trigger a unit test each time we commit and *push* new changes to our Github repository. Github actions can use the results of our actions to perform extra steps such as blocking the pull request from being merged into our main branch unless our unit tests pass. You can read more about branch protection [here](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches#require-status-checks-before-merging).
+    ```yaml
+      # This is the name of the Github Action
+      name: Github Actions Demo
+
+      # This is the result name of the Github Action
+      run-name: ${{ github.actor }} is testing out Github Actions
+
+      # This is what triggers the Github action to run. Here, we have a 'push'.
+      on: [push]
+
+      # Here we have a list of jobs to run. Each job consists of multiple steps.
+      jobs:
+
+        # This is what we're naming our first job.
+        explore-github-actions:
+
+          # This is telling the job what type of computer operating system to run on.
+          runs-on: ubuntu-latest
+
+          # This begins the list of steps to perform when running this job. Jobs
+          # run in sequence from top to bottom.
+          steps:
+            
+            # These are "actions". These actions represent code that is hosted elsewhere,
+            # written by someone else that can perform "actions" on our job. Here, we have
+            # the official "action" by Github that will do the equivalent of a 'git clone'
+            - name: Checkout code from repository
+              uses: actions/checkout@v4
+
+            # This will install Python for our job.
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                python-version: '3.11'
+
+            # This will set the `PATH` for our Python installation so it
+            # will know how to find our dog-api and it's respective tests.
+            - name: Set Python Path
+              run: |
+                echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_PATH
+                echo "${{ github.path }}"
+
+            # This will install all our dependencies that we need.
+            - name: Install Python Dependencies
+              run: |
+                # This installs the `pip` command
+                python -m pip install --upgrade pip
+
+                # This install the dependencies
+                pip install -r requirements.txt
+
+            # This will run pytest like we do locally. If anything fails,
+            # the Github action will mark the results red. If nothing fails,
+            # Github action will mark our results green.
+            - name: Python Unit Test
+              run: pytest --ignore=examples
+    ```
+    11. Open our `dog_api.py` and let's add an extra feature and write a test to see if it works. *Note:* the rest of the code was left out for brevity. Let's change the word "healthy" to "woof" to match the theme of our application. Commit the changes and push them into a branch. If you go to the *actions* tab on your Github repository, we should see the unit test running and the results.
+    
+    __Before__
+    ```python
+    @app.get("/health")
+    async def health():
+      return "healthy"
+    ```
+
+    __After__
+    ```python
+    @app.get("/health")
+    async def health():
+      return "woof"
+    ```
 
 ### The Recap
 
 
 ## Coming Up
 
-1. Unit testing in the Continuous Integration pipeline
+1. Integration Testing
 2. Building and storing our Docker container images
 3. Versioning our Docker container images
