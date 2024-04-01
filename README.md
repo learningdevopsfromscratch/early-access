@@ -22,6 +22,7 @@ Author: David Bour, *version: 0.0.5*
     - [The Analysis](#the-analysis-1)
     - [The Approach](#the-approach-1)
       - [Unit Testing](#unit-testing)
+      - [Integration Testing](#integration-testing)
     - [The Recap](#the-recap-1)
   - [Coming Up](#coming-up)
 
@@ -671,6 +672,14 @@ Unit testing at its core is testing a basic functionality of our application. Lo
     async def health():
       return "woof"
     ```
+
+#### Integration Testing
+
+Integration testing is the next level above unit testing if we were to think of tests as a pyramid with the *unit test* being the base layer. Integration tests usually will concern themselves with how the application interacts with external systems such as databases or other services. In the upcoming section, we'll explore how to test our service when our service relies on another service to provide our dogs with names.
+
+Testing in general deserves its own study. You may learn more by visiting [https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests](here).
+
+  1. 
 
 ### The Recap
 
