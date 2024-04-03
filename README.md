@@ -744,7 +744,7 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
             @app.get("/")
             async def get_random_name():
                 name = randomname.get_name(noun=('dogs'))
-                return {"names": name}
+                return {"name": name}
          ```
      * **Filename:** name_test.py
        * ```python

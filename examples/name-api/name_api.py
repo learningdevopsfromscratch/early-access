@@ -10,4 +10,4 @@ async def health():
 @app.get("/")
 async def get_random_name():
     name = randomname.get_name(noun=('dogs'))
-    return {"names": name}
+    return {"name": name}
