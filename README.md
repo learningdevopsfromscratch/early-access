@@ -819,7 +819,77 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
           ├── requirements.txt
      ```
 
-  4. Now let's refactor our dog api to utilize this new service! Open up the `dog_api.py` and add the following section.
+  4. Now let's refactor our dog api to utilize this new service! Open up the `dog_api.py` and add the following section. The older content, denoted by `...` was left out for brevity. Take note of the `name_service` which expects to call an external service which in this case is the new **name service** we just created.
+
+     ```python
+     ...
+     import os
+
+     ...
+
+     def name_service():
+         url = os.environ.get('NAME_API_URL', 'http://localhost:8081')
+         response = requests.get(url)
+         data = response.json()
+         return data['name']
+
+     @app.get("/", response_class=HTMLResponse)
+     async def get_random_dog():
+        try:
+            response = requests.get(DOG_API_URL)
+            response.raise_for_status()
+            data = response.json()
+            image_url = data["message"]
+            return f"""
+                <html>
+                <head>
+                    <title>DevOps Dog Shelter</title>
+                </head>
+                <body>
+                    <h1>DevOps From Scratch Dog Shelter</h1>
+                    <img src="{image_url}" alt="DevOps From Scratch Dog Shelter">
+                    <h2>{name_service()}</h2>
+                </body>
+                </html>"""
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+     ```
+
+  5. See what happens if we run our **Pytest** again on the **dog api**. We're going to get something like the following:
+
+  ```
+  ======================================================================================================================================================== FAILURES ========================================================================================================================================================
+  ______________________________________________________________________________________________________________________________________________ test_can_reach_dog_endpoint _______________________________________________________________________________________________________________________________________________
+
+      def test_can_reach_dog_endpoint():
+          response = client.get('/')
+  >       assert response.status_code == 200
+  E       assert 500 == 200
+  E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+  dog_test.py:16: AssertionError
+  ```
+
+  This is because we don't have a running **name api** service running when we run the test. To resolve this issue, we go back to testing theory and use what is commonly known as [*mocks*](https://en.wikipedia.org/wiki/Mock_object). *Mocks* in our definition is nothing but a substitute for the missing service. To create a *mock*, we're going to utilize the [pytest-mock](https://pytest-mock.readthedocs.io/en/latest/) library.
+
+  6. Run the following command to install `pytest-mock`
+  ```bash
+  pip install pytest-mock
+  ```
+
+  7. Save the new dependency into our `requirements.txt`
+  ```bash
+  pip freeze > requirements.txt
+  ```
+
+  8. Open up `dog_test.py` and modify the following block
+  ```python
+  def test_can_reach_dog_endpoint(mocker):
+    mocker.patch("dog_api.name_service", return_value="fuzzy-melon")
+    response = client.get('/')
+    assert response.status_code == 200
+  ```
+  Notice how we're passing `mocker` with allows **pytest mock** to work its magic. The `mocker.patch` portion is where we're pretending our name api is sending back the generated name `fuzzy-melon`. If we run `pytest` again, we should see all of the results passing once again.
 ### The Recap
 
 
