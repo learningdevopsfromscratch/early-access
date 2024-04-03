@@ -677,10 +677,149 @@ Unit testing at its core is testing a basic functionality of our application. Lo
 
 Integration testing is the next level above unit testing if we were to think of tests as a pyramid with the *unit test* being the base layer. Integration tests usually will concern themselves with how the application interacts with external systems such as databases or other services. In the upcoming section, we'll explore how to test our service when our service relies on another service to provide our dogs with names.
 
-Testing in general deserves its own study. You may learn more by visiting [https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests](here).
+The concepts and practice of testing extend beyond the scope of this book. We'll only touch the surface of testing, but you may learn more by visiting [https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests](here).
 
-  1. 
+  1. Let's begin by creating another service. Create a new directory and name it `name-api`.
 
+  2. Within `name-api`, create four files
+  ```bash
+  touch Dockerfile name_api.py name_test.py requirements.txt
+  ```
+
+  3. Add the following code into the respective files
+     * **Filename:** Dockerfile
+
+       * ```Dockerfile
+            # This is 'platform' or 'base image' that we're using
+            # to construct our Dockerfile. Most of the Python base images
+            # run on the Linux operating system, Debian. We could have
+            # used the Debian image as well such as https://hub.docker.com/_/debian
+            # but we would have to install extra components to get Python to work.
+            # Instead, we use the Python variant which is in fact another Dockerfile
+            # under the hood that sets up all of the dependencies that we can further
+            # add upon.
+            FROM python:3.11-slim
+
+            # This creates a directory called 'app' in the root. If you need more
+            # help in understanding what 'root' means, visit the following resource
+            # https://www.linuxfoundation.org/blog/blog/classic-sysadmin-the-linux-filesystem-explained
+            WORKDIR /app
+
+            # This copies the requirements.txt folder from our computer and transfers
+            # it into the path app/requirements.txt. We didn't need to specify /app/requirements
+            # since the prior step "WORKDIR /app" changes the context and places us into
+            # that folder already.
+            COPY requirements.txt requirements.txt
+
+            # This runs the pip command to install our dependencies.
+            RUN pip install -r requirements.txt
+
+            # This does another copy, but when you see a dot '.', it means to
+            # copy everything in your current location. So this translate to
+            # copy everything relative to my Docker context and place it in
+            # the current directory within Docker which happens to be /app
+            COPY . .
+
+            # This runs the uvicorn command which is a webserver that hosts
+            # our application. Notice how we had to specify --host=0.0.0.0
+            # Without going into too much details about networking, know that
+            # this allows connections from outside of the container to
+            # communicate with our server within the container. By default,
+            # the host is 127.0.0.1 which means you would have to be INSIDE
+            # of the container to access the uvicorn webserver.
+            CMD [ "uvicorn", "dog_api:app", "--host=0.0.0.0" ]
+
+         ```
+     * **Filename:** name_api.py
+       * ```python
+            import randomname
+            from fastapi import FastAPI
+
+            app = FastAPI()
+
+            @app.get("/health")
+            async def health():
+                return "healthy"
+
+            @app.get("/")
+            async def get_random_name():
+                name = randomname.get_name(noun=('dogs'))
+                return {"names": name}
+         ```
+     * **Filename:** name_test.py
+       * ```python
+            from fastapi.testclient import TestClient
+            from name_api import app
+
+            client = TestClient(app)
+
+            def test_can_reach_health_endpoint():
+                response = client.get('/health')
+                assert response.status_code == 200
+
+            def test_health_endpoint_returns_expected_msg():
+                response = client.get('/health')
+                assert response.text == '"healthy"'
+
+            def test_can_reach_name_endpoint():
+                response = client.get('/')
+                assert response.status_code == 200
+
+         ```
+     * **Filename:** requirements.txt
+       * ```
+          annotated-types==0.6.0
+          anyio==4.3.0
+          certifi==2024.2.2
+          charset-normalizer==3.3.2
+          click==8.1.7
+          fastapi==0.110.0
+          fire==0.6.0
+          h11==0.14.0
+          httpcore==1.0.4
+          httptools==0.6.1
+          httpx==0.27.0
+          idna==3.6
+          iniconfig==2.0.0
+          packaging==24.0
+          pluggy==1.4.0
+          pydantic==2.6.3
+          pydantic_core==2.16.3
+          pytest==8.1.1
+          python-dotenv==1.0.1
+          PyYAML==6.0.1
+          randomname==0.2.1
+          requests==2.31.0
+          six==1.16.0
+          sniffio==1.3.1
+          starlette==0.36.3
+          termcolor==2.4.0
+          typing_extensions==4.10.0
+          urllib3==2.2.1
+          uvicorn==0.28.0
+          uvloop==0.19.0
+          watchfiles==0.21.0
+          websockets==12.0
+
+         ```
+
+     These files should look very familiar to you. They're almost identical copies of the dog api code! You should be able to run the code locally as you did for the dog api in the same way. Your folder structure should look something similar to what we have below now.
+
+     ```
+      .
+      ├── dog-api
+      │   ├── Dockerfile
+      │   ├── dog_api.py
+      │   ├── dog_test.py
+      │   └── requirements.txt
+      └── name-api
+          ├── Dockerfile
+          ├── name_api.py
+          ├── name_test.py
+          ├── requirements.txt
+     ```
+
+  4. Now let's refactor our dog api to utilize this new service! Open up the `dog_api.py` and add the following section.
 ### The Recap
 
 
