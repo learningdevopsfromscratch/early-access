@@ -8,7 +8,7 @@ app = FastAPI()
 DOG_API_URL = "https://dog.ceo/api/breeds/image/random"
 
 def name_service():
-    url = os.environ.get('NAME_API_URL', 'http://localhost:8081')
+    url = os.environ.get('NAME_API_URL', 'http://localhost:8001')
     response = requests.get(url)
     data = response.json()
     return data['name']

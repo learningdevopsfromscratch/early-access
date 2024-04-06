@@ -679,14 +679,14 @@ Integration testing is the next level above unit testing if we were to think of 
 
 The concepts and practice of testing extend beyond the scope of this book. We'll only touch the surface of testing, but you may learn more by visiting [https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests](here).
 
-  1. Let's begin by creating another service. Create a new directory and name it `name-api`.
+  1. Before we begin adding more code, let's create a new git branch. Name it whatever you wish. Once you're done, create a new directory and name it `name-api`.
 
   2. Within `name-api`, create four files
   ```bash
   touch Dockerfile name_api.py name_test.py requirements.txt
   ```
 
-  3. Add the following code into the respective files
+  1. Add the following code into the respective files
      * **Filename:** Dockerfile
 
        * ```Dockerfile
@@ -819,7 +819,7 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
           ├── requirements.txt
      ```
 
-  4. Now let's refactor our dog api to utilize this new service! Open up the `dog_api.py` and add the following section. The older content, denoted by `...` was left out for brevity. Take note of the `name_service` which expects to call an external service which in this case is the new **name service** we just created.
+  2. Now let's refactor our dog api to utilize this new service! Open up the `dog_api.py` and add the following section. The older content, denoted by `...` was left out for brevity. Take note of the `name_service` which expects to call an external service which in this case is the new **name service** we just created.
 
      ```python
      ...
@@ -828,7 +828,7 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
      ...
 
      def name_service():
-         url = os.environ.get('NAME_API_URL', 'http://localhost:8081')
+         url = os.environ.get('NAME_API_URL', 'http://localhost:8001')
          response = requests.get(url)
          data = response.json()
          return data['name']
@@ -855,7 +855,7 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
             raise HTTPException(status_code=500, detail=str(e))
      ```
 
-  5. See what happens if we run our **Pytest** again on the **dog api**. We're going to get something like the following:
+  3. See what happens if we run our **Pytest** again on the **dog api**. We're going to get something like the following:
 
   ```
   ======================================================================================================================================================== FAILURES ========================================================================================================================================================
@@ -882,14 +882,75 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
   pip freeze > requirements.txt
   ```
 
-  8. Open up `dog_test.py` and modify the following block
+  8. Open up `dog_test.py` and modify the following code block
   ```python
   def test_can_reach_dog_endpoint(mocker):
     mocker.patch("dog_api.name_service", return_value="fuzzy-melon")
     response = client.get('/')
     assert response.status_code == 200
   ```
-  Notice how we're passing `mocker` with allows **pytest mock** to work its magic. The `mocker.patch` portion is where we're pretending our name api is sending back the generated name `fuzzy-melon`. If we run `pytest` again, we should see all of the results passing once again.
+  Notice how we're passing `mocker` with allows **pytest mock** to work its magic. The `mocker.patch` portion is where we're pretending our name api is sending back the generated name `fuzzy-melon`. If we run `pytest` again, we should see all of the results passing once again. Commit and push your new code to your branch that you created in Step 1. Create a new pull request on Github and check on the results of your Github action. If Github actions didn't pass, please re-visit Steps 1-8.
+
+  The mocks are great for testing individual services, but what we really want is an integration test. To do that, we're going to need to write another test case that can be conditionally turned on when we want to perform a true integration test with a real service instead of a mock.
+
+  9. Open up `dog_test.py` and add the following code block
+  ```python
+  @pytest.mark.integration_test
+  def test_can_reach_real_dog_endpoint():
+      response = client.get('/')
+      assert response.status_code == 200
+  ```
+
+  This block of code is decorated with `@pytest.mark.integration` which just means it won't execute unless we pass a command to Pytest to tell it to run `test_can_reach_real_dog_endpoint`.
+
+  10. To let Pytest know about this, we'll need to create a file called `conftest.py` in the same directory level as `dog_test.py`. Create the file `contest.py` and add the following code blocks
+  ```python
+  import pytest
+
+  def pytest_addoption(parser):
+      parser.addoption(
+          '--run-integration-tests',
+          action='store_true',
+          default=False,
+          help='Run tests marked with the `integration_test` marker'
+      )
+
+  def pytest_configure(config):
+      config.addinivalue_line('markers', 'integration_test: mark test to run only when --run-integration-tests is passed')
+
+  def pytest_collection_modifyitems(config, items):
+      if not config.getoption('--run-integration-tests'):
+          skip_flagged = pytest.mark.skip(reason="Need --run-integration-tests options to run")
+          for item in items:
+              if 'integration_test' in item.keywords:
+                  item.add_marker(skip_flagged)
+  ```
+
+  As usual, don't get too caught up in the code. Just know that this now allows us to run Pytest with the `--run-integration-tests` command (e.g. `pytest --run-integration-tests`). Try running Pytest with and without this command to see the difference.
+
+11. To get our integration test working locally, let's run our name api webserver.
+    1.  Open up a new terminal
+    2.  Go to the `name-api` directory
+    3.  Create your virtual environment or re-use an existing one
+    4.  Install the dependencies if you created a new virtual environment
+    5.  Run the command `uvicorn name_api:app`
+    6.  Verify your webserver is running by visiting http://localhost:8000 on your browser
+    7.  Open another terminal while keeping the name-api running
+    8.  Go to the `dog-api` directory
+    9.  Create your virtual environment or re-use an existing one
+    10. Install the dependencies if you created a new virtual environment
+    11. Run the following Pytest command to execute the integration test
+    ```bash
+    NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
+    ```
+    Notice how we're passing the enviromental variable `http://localhost:8000` here before running the Pytest command. This environmental variable is specified within the `dog_api.py` in the following code block
+    ```python
+    def name_service():
+      url = os.environ.get('NAME_API_URL', 'http://localhost:8001')
+      ...
+    ```
+    When we ran our name api, it defaults to port `8000` which means we need to specify the environmental variable to use port `8000` instead of `8001` which is the default if no environmental variables were specified.
+
 ### The Recap
 
 

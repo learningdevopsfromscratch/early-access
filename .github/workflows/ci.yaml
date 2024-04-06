@@ -56,3 +56,12 @@ jobs:
       - name: Python Unit Test
         run: pytest --ignore=examples
         working-directory: examples/dog-api
+
+      - name: Start the Name API in the Background
+        run: |
+          nohup uvicorn name_api:app > uvicorn.log 2>&1 &
+        working-directory: examples/name-api
+
+      - name: Python Integration Test
+        run: NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
+        working-directory: examples/dog-api
