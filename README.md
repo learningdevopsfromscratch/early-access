@@ -307,7 +307,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *software
 
         8.  Store the application in the Github repository. Your repository should have the following folder structure.
         ```bash
-        app
+        dog-api
         ├── dog_api.py
         └── requirements.txt
         └── .gitignore
