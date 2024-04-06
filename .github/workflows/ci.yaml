@@ -60,6 +60,7 @@ jobs:
       - name: Start the Name API in the Background
         run: |
           nohup uvicorn name_api:app > uvicorn.log 2>&1 &
+          sleep 5
         working-directory: examples/name-api
 
       - name: Python Integration Test
