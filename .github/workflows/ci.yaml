@@ -64,15 +64,15 @@ jobs:
           pytest
         working-directory: examples/dog-api
 
-      # - name: Start the Name API in the Background
-      #   run: |
-      #     python -m pip install --upgrade pip
-      #     pip install -r requirements.txt
-      #     uvicorn name_api:app
-      #     nohup uvicorn name_api:app > uvicorn.log 2>&1 &
-      #     sleep 5
-      #   working-directory: examples/name-api
+      - name: Start the Name API in the Background
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          uvicorn name_api:app
+          nohup uvicorn name_api:app > uvicorn.log 2>&1 &
+          sleep 5
+        working-directory: examples/name-api
 
-      # - name: Python Integration Test
-      #   run: NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
-      #   working-directory: examples/dog-api
+      - name: Python Integration Test
+        run: NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
+        working-directory: examples/dog-api
