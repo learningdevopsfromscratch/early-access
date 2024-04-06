@@ -69,8 +69,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           uvicorn name_api:app
-          nohup uvicorn name_api:app > uvicorn.log 2>&1 &
-          sleep 5
+          nohup uvicorn name_api:app &
         working-directory: examples/name-api
 
       - name: Python Integration Test
