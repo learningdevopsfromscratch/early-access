@@ -38,6 +38,7 @@ jobs:
         run: |
           echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_PATH
           echo "${{ github.path }}"
+        working-directory: dog-api
 
       # This will install all our dependencies that we need.
       - name: Install Python Dependencies
@@ -47,9 +48,26 @@ jobs:
 
           # This install the dependencies
           pip install -r requirements.txt
+        working-directory: dog-api
 
       # This will run pytest like we do locally. If anything fails,
       # the GitHub action will mark the results red. If nothing fails,
       # GitHub action will mark our results green.
       - name: Python Unit Test
-        run: pytest --ignore=examples
+        run: pytest
+        working-directory: dog-api
+
+      # This will run our name api in the background so our GitHub actions doesn't get stuck!
+      # It runs on the background using some special Linux commands such as `nohup` and `&`
+      - name: Start the Name API in the Background
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          nohup uvicorn name_api:app &
+        working-directory: name-api
+
+      # This runs our integration test which targets our name api deployed at http://localhost:8000
+      # We pass the flag --run-integration-tests to execute our test case we wrote in dog_test.py
+      - name: Python Integration Test
+        run: NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
+        working-directory: dog-api
