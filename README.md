@@ -1,5 +1,5 @@
 # DevOps From Scratch (Early Access)
-Author: David Bour, *version: 0.0.5*
+Author: David Bour, *version: 0.0.6*
 
 - [DevOps From Scratch (Early Access)](#devops-from-scratch-early-access)
   - [Who is this for?](#who-is-this-for)
@@ -25,7 +25,6 @@ Author: David Bour, *version: 0.0.5*
       - [Integration Testing](#integration-testing)
     - [The Recap](#the-recap-1)
   - [Coming Up](#coming-up)
-  - [NOTES](#notes)
 
 
 ## Who is this for?
@@ -976,7 +975,7 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
             working-directory: dog-api
         ```
 
-1.  Commit and push the changes you have so far to see the GitHub actions integration test run. If everything has ran successfully, you've just built your first integration test!
+13. Commit and push the changes you have so far to see the GitHub actions integration test run. If everything has ran successfully, you've just built your first integration test!
 
 
 
@@ -985,13 +984,5 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
 
 ## Coming Up
 
-1. Integration Testing
-2. Building and storing our Docker container images
-3. Versioning our Docker container images
-
-
-## NOTES
-
-1. Re-read section on unit testing and integration
-   1. Did I mention anything about branching?
-   2. Do the steps make sense?
+1. Building and storing our Docker container images
+2. Versioning our Docker container images
