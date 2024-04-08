@@ -25,6 +25,7 @@ Author: David Bour, *version: 0.0.5*
       - [Integration Testing](#integration-testing)
     - [The Recap](#the-recap-1)
   - [Coming Up](#coming-up)
+  - [NOTES](#notes)
 
 
 ## Who is this for?
@@ -134,7 +135,7 @@ Type in `exit()` to exit the Python interpreter.
    2. Resources to get started with *git*. **Note:** DO NOT SKIP THIS. *git* is vital to our software pipeline.
       1. Learning git - https://docs.github.com/en/get-started/getting-started-with-git
       2. Interactive learning - https://learngitbranching.js.org/
-3. Create an account on [Github](https://github.com/). Github is a useful *version control system* based on *git* where we save and share our code remotely.
+3. Create an account on [GitHub](https://github.com/). GitHub is a useful *version control system* based on *git* where we save and share our code remotely.
 
 4. Install [Docker](https://docs.docker.com/engine/install/). *Docker* is used to manage container images. You don't have to know more at the moment beyond the fact that *Docker* will be used to house our applications so they run the same on anyone's computer, including ones running in the cloud such as AWS (Amazon Web Services).
 
@@ -172,23 +173,23 @@ After rubbing your eyes in disbelief, you come to realize they have no *software
 
 #### Version Control
 
-   The team needs a version control system. We'll use `.git` to version control their application. This saves the team from having to store multiple copies of the file. It also allows the members to then use an external `.git` host such as *Github*.
+   The team needs a version control system. We'll use `.git` to version control their application. This saves the team from having to store multiple copies of the file. It also allows the members to then use an external `.git` host such as *GitHub*.
 
    Remember when I mentioned to not skip the `.git` lessons? If you missed that, please take some time and invest in learning more about it. Here are some recommended resources
    
   - [Learning git](https://docs.github.com/en/get-started/getting-started-with-git)
   - [Git Interactive learning](https://learngitbranching.js.org/)
 
-   Let's get our Github Repository set up.
+   Let's get our GitHub Repository set up.
 
    1. Create an empty directory called `dog-api`
    ```bash
    mkdir dog-api
    ```
 
-   2. Create a [Github Repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories) and give it a name such as `dog-api`. Make sure the repository is set to *public*. We want to show it off after all!
+   2. Create a [GitHub Repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories) and give it a name such as `dog-api`. Make sure the repository is set to *public*. We want to show it off after all!
 
-   3. In your `dog-api` directory, follow the instructions on how to setup a new Github repository. *Hint*: it starts with `git init`.
+   3. In your `dog-api` directory, follow the instructions on how to setup a new GitHub repository. *Hint*: it starts with `git init`.
 
    3. Next, we'll be creating three files 
       1. **Filename**: dog_api.py
@@ -305,7 +306,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *software
         ```
         7.  If you open a web browser and go to http://127.0.0.1:8000 , you should see a picture of a dog thats ready to be adopted!
 
-        8.  Store the application in the Github repository. Your repository should have the following folder structure.
+        8.  Store the application in the GitHub repository. Your repository should have the following folder structure.
         ```bash
         dog-api
         ├── dog_api.py
@@ -317,7 +318,7 @@ After rubbing your eyes in disbelief, you come to realize they have no *software
 
          10. Create a new file called `README.md` under the `app` directory and add your name to it. Submit this new file into the codebase using the concepts of GitHub flow.
 
-         11. After merging the changes to the *trunk* (aka HEAD or main), create a release and name it `1.0.0`. Learn more about creating Github Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
+         11. After merging the changes to the *trunk* (aka HEAD or main), create a release and name it `1.0.0`. Learn more about creating GitHub Releases [here](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository). The `1.0.0` is based on the *semver* semantics which you can read up more [here](https://semver.org/).
 
 #### Local Development
 
@@ -433,7 +434,7 @@ Here are some questions to help you get started:
 
 5. What is the difference between a container and a virtual machine (VM)?
 
-Answer these questions and add them to your `README.md` in your Github repository!
+Answer these questions and add them to your `README.md` in your GitHub repository!
 
 
 ## Build. Test. Break. Repeat.
@@ -475,203 +476,209 @@ If we break down the CI process, we see it has some core steps:
 
 Unit testing at its core is testing a basic functionality of our application. Looking back at our example Python application, we have not written any unit tests yet, so let's begin with that.
 
-1. Let's go to our directory `dog-api` and a file where we'll add our unit tests.
-   ```bash
-   # Creates a file named 'dog_test.py'
-   touch dog_test.py
-   ```
+  1. Before we begin writing any new code, let's create a new branch. Name it as you wish and switch to it. If you forgot how to do this in git, I implore you to revisit the lessons listed [here](#all-systems).
 
-2. We will now also install a testing framework called Pytest to run tests against our application. Before installing, let's activate a virtual environment. If you missed the virtual section portion, please refer back to **Step 3** under [version control](#version-control) section.
-   
-   1. Create the virtual environment folder if there is none.
+  2. Let's go to our directory `dog-api` and a file where we'll add our unit tests.
       ```bash
-      python3 -m venv venv
+      # Creates a file named 'dog_test.py'
+      touch dog_test.py
       ```
-   2. Activate the virtual environment.
-      ```bash
-      source venv/bin/activate
+  3. We will now also install a testing framework called Pytest to run tests against our application. Before installing, let's activate a virtual environment. If you missed the virtual section portion, please refer back to **Step 3** under [version control](#version-control) section.
+      1. Create the virtual environment folder if there is none.
+          ```bash
+          python3 -m venv venv
+          ```
+      2. Activate the virtual environment.
+          ```bash
+          source venv/bin/activate
+          ```
+      3. Install the Pytest framework.
+          ```bash
+          pip install pytest
+          ```
+      4. Install the httpx library for testing our web requests in FastAPI.
+         ```bash
+         pip install httpx
+         ```
+      5. Save the requirement into your `requirements.txt` file.
+         ```bash
+         pip freeze > requirements.txt
+         ```
+      6. Your `requirements.txt` file should look something as follows:
+         ```
+         annotated-types==0.6.0
+         anyio==4.3.0
+         certifi==2024.2.2
+         charset-normalizer==3.3.2
+         click==8.1.7
+         fastapi==0.110.0
+         h11==0.14.0
+         httpcore==1.0.4
+         httptools==0.6.1
+         httpx==0.27.0
+         idna==3.6
+         iniconfig==2.0.0
+         packaging==24.0
+         pluggy==1.4.0
+         pydantic==2.6.3
+         pydantic_core==2.16.3
+         pytest==8.1.1
+         python-dotenv==1.0.1
+         PyYAML==6.0.1
+         requests==2.31.0
+         sniffio==1.3.1
+         starlette==0.36.3
+         typing_extensions==4.10.0
+         urllib3==2.2.1
+         uvicorn==0.28.0
+         uvloop==0.19.0
+         watchfiles==0.21.0
+         websockets==12.0
+         ```
+
+  4. Let's also update our `.gitignore` to ignore `.pytest_cache`. It's a good practice to ignore things we don't need to version control to keep our code repository clean.
       ```
-   3. Install the Pytest framework.
-      ```bash
-      pip install pytest
-      ```
-   4. Install the httpx library for testing our web requests in FastAPI.
-      ```bash
-      pip install httpx
-      ```
-   5. Save the requirement into your `requirements.txt` file.
-      ```bash
-      pip freeze > requirements.txt
-      ```
-   6. Your `requirements.txt` file should look something as follows:
-      ```
-      annotated-types==0.6.0
-      anyio==4.3.0
-      certifi==2024.2.2
-      charset-normalizer==3.3.2
-      click==8.1.7
-      fastapi==0.110.0
-      h11==0.14.0
-      httpcore==1.0.4
-      httptools==0.6.1
-      httpx==0.27.0
-      idna==3.6
-      iniconfig==2.0.0
-      packaging==24.0
-      pluggy==1.4.0
-      pydantic==2.6.3
-      pydantic_core==2.16.3
-      pytest==8.1.1
-      python-dotenv==1.0.1
-      PyYAML==6.0.1
-      requests==2.31.0
-      sniffio==1.3.1
-      starlette==0.36.3
-      typing_extensions==4.10.0
-      urllib3==2.2.1
-      uvicorn==0.28.0
-      uvloop==0.19.0
-      watchfiles==0.21.0
-      websockets==12.0
+      venv/
+      __pycache__/
+      .pytest_cache
       ```
 
-3. Let's also update our `.gitignore` to ignore `.pytest_cache`. It's a good practice to ignore things we don't need to version control to keep our code repository clean.
-    ```
-    venv/
-    __pycache__/
-    .pytest_cache
-    ```
+  5. Open up the `dog_test.py` file and add the following contents:
 
-4. Open up the `dog_test.py` file and add the following contents:
+      ```python
+      from fastapi.testclient import TestClient
+      from dog_api import app
 
-    ```python
-    from fastapi.testclient import TestClient
-    from dog_api import app
+      client = TestClient(app)
 
-    client = TestClient(app)
+      def test_can_reach_health_endpoint():
+          response = client.get('/health')
+          assert response.status_code == 200
 
-    def test_can_reach_health_endpoint():
-        response = client.get('/health')
-        assert response.status_code == 200
+      def test_health_endpoint_returns_expected_msg():
+          response = client.get('/health')
+          assert response.text == '"healthy"'
 
-    def test_health_endpoint_returns_expected_msg():
-        response = client.get('/health')
-        assert response.text == '"healthy"'
+      def test_can_reach_dog_endpoint():
+          response = client.get('/')
+          assert response.status_code == 200
+      ```
+      Don't get too caught up in the code. Just know that this code is running three unit tests which are checking if we can perform requests to our web server without receiving an error. If you'd like to learn more about Pytest, please see the docs [here](https://docs.pytest.org/en/8.0.x/). If you're interested in testing in general, I recommend reading this [resource](https://www.obeythetestinggoat.com/).
 
-    def test_can_reach_dog_endpoint():
-        response = client.get('/')
-        assert response.status_code == 200
-    ```
-    Don't get too caught up in the code. Just know that this code is running three unit tests which are checking if we can perform requests to our web server without receiving an error. If you'd like to learn more about Pytest, please see the docs [here](https://docs.pytest.org/en/8.0.x/). If you're interested in testing in general, I recommend reading this [resource](https://www.obeythetestinggoat.com/).
-  5. From the root directory `dog-api`, run `pytest`. You should see something similar to the results below
-  ```python
-  ============================================================= warnings summary =============================================================
-  venv/lib/python3.11/site-packages/httpx/_client.py:680
-    /Users/dbour/Projects/devops-from-scratch/early-content/devopsfromscratch/examples/app/venv/lib/python3.11/site-packages/httpx/_client.py:680: DeprecationWarning: The 'app' shortcut is now deprecated. Use the explicit style 'transport=WSGITransport(app=...)' instead.
-      warnings.warn(message, DeprecationWarning)
+  6. From the root directory `dog-api`, run `pytest`. You should see something similar to the results below
+       ```python
+       ============================================================= warnings summary =============================================================
+       venv/lib/python3.11/site-packages/httpx/_client.py:680
+       /Users/dbour/Projects/devops-from-scratch/early-content/devopsfromscratch/examples/app/venv/lib/python3.11/site-packages/httpx/_client.py:680: DeprecationWarning: The 'app' shortcut is now deprecated. Use the explicit style 'transport=WSGITransport(app=...)' instead.
+         warnings.warn(message, DeprecationWarning)
 
-  -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-  ========================================================
-  3 passed, 1 warning in 1.34s ========================================================
-  ```
-  This is just saying our three tests has passed. Try breaking the test by making changes to our `dog_api.py` health endpoint such as making it return `bacon` instead of `"healthy"`.
+       -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+       ========================================================
+       3 passed, 1 warning in 1.34s ========================================================
+       ```
+       This is just saying our three tests have passed. Try breaking the test by making changes to our `dog_api.py` health endpoint such as making it return `bacon` instead of `"healthy"`.
 
-  Here's an example
-  ```python
-  @app.get("/health")
-  async def health():
-    return "bacon"
-  ```
+       Here's an example
+       ```python
+       @app.get("/health")
+       async def health():
+         return "bacon"
+       ```
 
-  6. Now that we have a local unit test running, we can now start looking into into our first CI pipeline. Since we are using Github as our source control, we'll go with the easiest option and use [Github Actions](https://docs.github.com/en/actions).
+  7. Now that we have a local unit test running, we can start looking into into our first CI pipeline. Since we are using GitHub as our source control, we'll go with the easiest option and use [GitHub Actions](https://docs.github.com/en/actions) as our CI provider.
 
-      You can think of Github Actions as a platform to interact with an external computer which has tight integrations with your Github repository. The fact that Github Actions runs external computers under the hood means you can run arbitrary code such as the unit test we wrote above and capture those results. We can take it one step further and take action on that result such as preventing merges to the main or trunk branch if the new code changes introduced do not pass our unit test.
+      You can think of GitHub Actions as a platform to interact with an external computer which has tight integrations with your GitHub repository. The fact that GitHub Actions runs external computers under the hood means you can run arbitrary code such as the unit test we wrote above and capture those results. We can take it one step further and take action on that result such as preventing merges to the main or trunk branch if the new code changes introduced do not pass our unit test.
 
- 7. In the next few sections, I'll only introduce enough Github Action concepts to get us through. The main goal is to understand the software delivery pipeline and not get caught up with the nuances of Github Actions. If you'd like to learn more about Github Actions, please refer to the documents [here](https://docs.github.com/en/actions).
+  8. In the next few sections, I'll only introduce enough GitHub Action concepts to get us the bare minimum needed for a CI pipeline. The main goal is to understand the software delivery pipeline and not get caught up with the nuances of GitHub Actions. If you'd like to learn more about GitHub Actions, please refer to the documents [here](https://docs.github.com/en/actions).
 
-    The majority of the code written will attempt to be as Github Actions agnostic as possible. The practice of writing platform agnostic code is not always feasible, but it makes our pipeline less beholden to a specific company's product; imagine a scenario where Github Actions starts charging more than you can afford while there are cheaper competitors.
+      The majority of the code written will attempt to be as GitHub Actions agnostic as possible. The practice of writing platform agnostic code is not always feasible, but it makes our pipeline less beholden to a specific company's product; imagine a scenario where GitHub Actions starts charging more than you can afford while there are cheaper competitors.
 
- 8. The first step to create a Github Actions is to create a directory named `.github` in the root directory of your repository. Our root directory is `dog-api`. Under `.github`, create another directory called `workflows`.
-    ```bash
-    mkdir -p .github/workflows
-    ```
- 9. Create a file named `ci.yaml` under `.github/workflows`.
-    ```bash
-    touch ci.yaml
-    ```
-10. In the `ci.yaml`, add the following content. Read the comments which are preceded by the `#` symbol to get an understanding of what each step is doing. The result of this file is we'll have a way to trigger a unit test each time we commit and *push* new changes to our Github repository. Github actions can use the results of our actions to perform extra steps such as blocking the pull request from being merged into our main branch unless our unit tests pass. You can read more about branch protection [here](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches#require-status-checks-before-merging).
-    ```yaml
-      # This is the name of the Github Action
-      name: Github Actions Demo
+  9. The first step to create a GitHub Actions is to create a directory named `.github` in the root directory of your repository. Our root directory is `dog-api`. Under `.github`, create another directory called `workflows`.
+       ```bash
+       mkdir -p .github/workflows
+       ```
+  10. Create a file named `ci.yaml` under `.github/workflows`.
+       ```bash
+       touch ci.yaml
+       ```
+  11. In the `ci.yaml`, add the following content. Read the comments which are preceded by the `#` symbol to get an understanding of what each step is doing. The result of this file is we'll have a way to trigger a unit test each time we commit and *push* new changes to our GitHub repository; we could have triggered the GitHub action to run on *pull request* as well. See the [docs](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows) for more information on triggers. GitHub actions can use the results of our actions to perform extra steps such as blocking the pull request from being merged into our main branch unless our unit tests pass. You can read more about branch protection [here](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches#require-status-checks-before-merging).
+        ```yaml
+          # This is the name of the GitHub Action
+          name: GitHub Actions Demo
 
-      # This is the result name of the Github Action
-      run-name: ${{ github.actor }} is testing out Github Actions
+          # This is the result name of the GitHub Action
+          run-name: ${{ github.actor }} is testing out GitHub Actions
 
-      # This is what triggers the Github action to run. Here, we have a 'push'.
-      on: [push]
+          # This is what triggers the GitHub action to run. Here, we have a 'push'.
+          on: [push]
 
-      # Here we have a list of jobs to run. Each job consists of multiple steps.
-      jobs:
+          # Here we have a list of jobs to run. Each job consists of multiple steps.
+          jobs:
 
-        # This is what we're naming our first job.
-        explore-github-actions:
+            # This is what we're naming our first job.
+            explore-github-actions:
 
-          # This is telling the job what type of computer operating system to run on.
-          runs-on: ubuntu-latest
+              # This is telling the job what type of computer operating system to run on.
+              runs-on: ubuntu-latest
 
-          # This begins the list of steps to perform when running this job. Jobs
-          # run in sequence from top to bottom.
-          steps:
-            
-            # These are "actions". These actions represent code that is hosted elsewhere,
-            # written by someone else that can perform "actions" on our job. Here, we have
-            # the official "action" by Github that will do the equivalent of a 'git clone'
-            - name: Checkout code from repository
-              uses: actions/checkout@v4
+              # This begins the list of steps to perform when running this job. Jobs
+              # run in sequence from top to bottom.
+              steps:
+                
+                # These are "actions". These actions represent code that is hosted elsewhere,
+                # written by someone else that can perform "actions" on our job. Here, we have
+                # the official "action" by GitHub that will do the equivalent of a 'git clone'
+                - name: Checkout code from repository
+                  uses: actions/checkout@v4
 
-            # This will install Python for our job.
-            - name: Set up Python
-              uses: actions/setup-python@v4
-              with:
-                python-version: '3.11'
+                # This will install Python for our job.
+                - name: Set up Python
+                  uses: actions/setup-python@v4
+                  with:
+                    python-version: '3.11'
 
-            # This will set the `PATH` for our Python installation so it
-            # will know how to find our dog-api and it's respective tests.
-            - name: Set Python Path
-              run: |
-                echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_PATH
-                echo "${{ github.path }}"
+                # This will set the `PATH` for our Python installation so it
+                # will know how to find our dog-api and it's respective tests.
+                - name: Set Python Path
+                  run: |
+                    echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_PATH
+                    echo "${{ github.path }}"
+                  working-directory: dog-api
 
-            # This will install all our dependencies that we need.
-            - name: Install Python Dependencies
-              run: |
-                # This installs the `pip` command
-                python -m pip install --upgrade pip
+                # This will install all our dependencies that we need.
+                - name: Install Python Dependencies
+                  run: |
+                    # This installs the `pip` command
+                    python -m pip install --upgrade pip
 
-                # This install the dependencies
-                pip install -r requirements.txt
+                    # This install the dependencies
+                    pip install -r requirements.txt
+                  working-directory: dog-api
 
-            # This will run pytest like we do locally. If anything fails,
-            # the Github action will mark the results red. If nothing fails,
-            # Github action will mark our results green.
-            - name: Python Unit Test
-              run: pytest --ignore=examples
-    ```
-    11. Open our `dog_api.py` and let's add an extra feature and write a test to see if it works. *Note:* the rest of the code was left out for brevity. Let's change the word "healthy" to "woof" to match the theme of our application. Commit the changes and push them into a branch. If you go to the *actions* tab on your Github repository, we should see the unit test running and the results.
-    
-    __Before__
-    ```python
-    @app.get("/health")
-    async def health():
-      return "healthy"
-    ```
+                # This will run pytest like we do locally. If anything fails,
+                # the GitHub action will mark the results red. If nothing fails,
+                # GitHub action will mark our results green.
+                - name: Python Unit Test
+                  run: pytest
+                  working-directory: dog-api
+        ```
+  12.  Open our `dog_api.py` and let's add an extra feature and write a test to see if it works. *Note:* the rest of the code was left out for brevity. Let's change the word "healthy" to "woof" to match the theme of our application. Commit the changes and push them into a branch. If you go to the *actions* tab on your GitHub repository, we should see the unit test running and the results.
 
-    __After__
-    ```python
-    @app.get("/health")
-    async def health():
-      return "woof"
-    ```
+       __Before__
+       ```python
+       @app.get("/health")
+       async def health():
+       return "healthy"
+       ```
+
+       __After__
+       ```python
+       @app.get("/health")
+       async def health():
+       return "woof"
+       ```
+
+  13. Commit the new changes and push them into the branch you created. Once you push the new code, visit the *Actions* tab within the GitHub repository to see the results of your action. If everything goes as planned, you should see a green checkmark in your pull request. Go ahead and merge your pull request once you're satisfied.
 
 #### Integration Testing
 
@@ -686,10 +693,10 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
   touch Dockerfile name_api.py name_test.py requirements.txt
   ```
 
-  1. Add the following code into the respective files
+  3. Add the following code into the respective files
      * **Filename:** Dockerfile
 
-       * ```Dockerfile
+         ```Dockerfile
             # This is 'platform' or 'base image' that we're using
             # to construct our Dockerfile. Most of the Python base images
             # run on the Linux operating system, Debian. We could have
@@ -731,7 +738,7 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
 
          ```
      * **Filename:** name_api.py
-       * ```python
+         ```python
             import randomname
             from fastapi import FastAPI
 
@@ -747,7 +754,7 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
                 return {"name": name}
          ```
      * **Filename:** name_test.py
-       * ```python
+         ```python
             from fastapi.testclient import TestClient
             from name_api import app
 
@@ -819,7 +826,7 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
           ├── requirements.txt
      ```
 
-  2. Now let's refactor our dog api to utilize this new service! Open up the `dog_api.py` and add the following section. The older content, denoted by `...` was left out for brevity. Take note of the `name_service` which expects to call an external service which in this case is the new **name service** we just created.
+  4. Now let's refactor our dog api to utilize this new service! Open up the `dog_api.py` and add the following section. The older content, denoted by `...` was left out for brevity. Take note of the `name_service` which expects to call an external service which in this case is the new **name service** we just created.
 
      ```python
      ...
@@ -855,101 +862,123 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
             raise HTTPException(status_code=500, detail=str(e))
      ```
 
-  3. See what happens if we run our **Pytest** again on the **dog api**. We're going to get something like the following:
+  5. See what happens if we run our **Pytest** again on the **dog api**. We're going to get something like the following:
 
-  ```
-  ======================================================================================================================================================== FAILURES ========================================================================================================================================================
-  ______________________________________________________________________________________________________________________________________________ test_can_reach_dog_endpoint _______________________________________________________________________________________________________________________________________________
+      ```
+      ======================================================================================================================================================== FAILURES ========================================================================================================================================================
+      ______________________________________________________________________________________________________________________________________________ test_can_reach_dog_endpoint _______________________________________________________________________________________________________________________________________________
 
-      def test_can_reach_dog_endpoint():
-          response = client.get('/')
-  >       assert response.status_code == 200
-  E       assert 500 == 200
-  E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+          def test_can_reach_dog_endpoint():
+              response = client.get('/')
+      >       assert response.status_code == 200
+      E       assert 500 == 200
+      E        +  where 500 = <Response [500 Internal Server Error]>.status_code
 
-  dog_test.py:16: AssertionError
-  ```
+      dog_test.py:16: AssertionError
+      ```
 
-  This is because we don't have a running **name api** service running when we run the test. To resolve this issue, we go back to testing theory and use what is commonly known as [*mocks*](https://en.wikipedia.org/wiki/Mock_object). *Mocks* in our definition is nothing but a substitute for the missing service. To create a *mock*, we're going to utilize the [pytest-mock](https://pytest-mock.readthedocs.io/en/latest/) library.
+      This is because we don't have a running **name api** service running when we run the test. To resolve this issue, we go back to testing theory and use what is commonly known as [*mocks*](https://en.wikipedia.org/wiki/Mock_object). *Mocks* in our definition is nothing but a substitute for the missing service. To create a *mock*, we're going to utilize the [pytest-mock](https://pytest-mock.readthedocs.io/en/latest/) library.
 
   6. Run the following command to install `pytest-mock`
-  ```bash
-  pip install pytest-mock
-  ```
+      ```bash
+      pip install pytest-mock
+      ```
 
   7. Save the new dependency into our `requirements.txt`
-  ```bash
-  pip freeze > requirements.txt
-  ```
+      ```bash
+      pip freeze > requirements.txt
+      ```
 
   8. Open up `dog_test.py` and modify the following code block
-  ```python
-  def test_can_reach_dog_endpoint(mocker):
-    mocker.patch("dog_api.name_service", return_value="fuzzy-melon")
-    response = client.get('/')
-    assert response.status_code == 200
-  ```
-  Notice how we're passing `mocker` with allows **pytest mock** to work its magic. The `mocker.patch` portion is where we're pretending our name api is sending back the generated name `fuzzy-melon`. If we run `pytest` again, we should see all of the results passing once again. Commit and push your new code to your branch that you created in Step 1. Create a new pull request on Github and check on the results of your Github action. If Github actions didn't pass, please re-visit Steps 1-8.
+      ```python
+      def test_can_reach_dog_endpoint(mocker):
+        mocker.patch("dog_api.name_service", return_value="fuzzy-melon")
+        response = client.get('/')
+        assert response.status_code == 200
+      ```
+      Notice how we're passing `mocker` with allows **pytest mock** to work its magic. The `mocker.patch` portion is where we're pretending our name api is sending back the generated name `fuzzy-melon`. If we run `pytest` again, we should see all of the results passing once again. Commit and push your new code to your branch that you created in Step 1. Create a new pull request on GitHub and check on the results of your GitHub action. If GitHub actions didn't pass, please re-visit Steps 1-8.
 
-  The mocks are great for testing individual services, but what we really want is an integration test. To do that, we're going to need to write another test case that can be conditionally turned on when we want to perform a true integration test with a real service instead of a mock.
+      The mocks are great for testing individual services, but what we really want is an integration test. To do that, we're going to need to write another test case that can be conditionally turned on when we want to perform a true integration test with a real service instead of a mock.
 
   9. Open up `dog_test.py` and add the following code block
-  ```python
-  @pytest.mark.integration_test
-  def test_can_reach_real_dog_endpoint():
-      response = client.get('/')
-      assert response.status_code == 200
-  ```
+      ```python
+      @pytest.mark.integration_test
+      def test_can_reach_real_dog_endpoint():
+          response = client.get('/')
+          assert response.status_code == 200
+      ```
 
-  This block of code is decorated with `@pytest.mark.integration` which just means it won't execute unless we pass a command to Pytest to tell it to run `test_can_reach_real_dog_endpoint`.
+      This block of code is decorated with `@pytest.mark.integration` which just means it won't execute unless we pass a command to Pytest to tell it to run `test_can_reach_real_dog_endpoint`.
 
   10. To let Pytest know about this, we'll need to create a file called `conftest.py` in the same directory level as `dog_test.py`. Create the file `contest.py` and add the following code blocks
-  ```python
-  import pytest
+      ```python
+      import pytest
 
-  def pytest_addoption(parser):
-      parser.addoption(
-          '--run-integration-tests',
-          action='store_true',
-          default=False,
-          help='Run tests marked with the `integration_test` marker'
-      )
+      def pytest_addoption(parser):
+          parser.addoption(
+              '--run-integration-tests',
+              action='store_true',
+              default=False,
+              help='Run tests marked with the `integration_test` marker'
+          )
 
-  def pytest_configure(config):
-      config.addinivalue_line('markers', 'integration_test: mark test to run only when --run-integration-tests is passed')
+      def pytest_configure(config):
+          config.addinivalue_line('markers', 'integration_test: mark test to run only when --run-integration-tests is passed')
 
-  def pytest_collection_modifyitems(config, items):
-      if not config.getoption('--run-integration-tests'):
-          skip_flagged = pytest.mark.skip(reason="Need --run-integration-tests options to run")
-          for item in items:
-              if 'integration_test' in item.keywords:
-                  item.add_marker(skip_flagged)
-  ```
+      def pytest_collection_modifyitems(config, items):
+          if not config.getoption('--run-integration-tests'):
+              skip_flagged = pytest.mark.skip(reason="Need --run-integration-tests options to run")
+              for item in items:
+                  if 'integration_test' in item.keywords:
+                      item.add_marker(skip_flagged)
+      ```
 
-  As usual, don't get too caught up in the code. Just know that this now allows us to run Pytest with the `--run-integration-tests` command (e.g. `pytest --run-integration-tests`). Try running Pytest with and without this command to see the difference.
+      As mentioned before, don't get too caught up in the code. Just know that this now allows us to run Pytest with the `--run-integration-tests` command (e.g. `pytest --run-integration-tests`). Try running Pytest with and without this command to see the difference.
 
-11. To get our integration test working locally, let's run our name api webserver.
-    1.  Open up a new terminal
-    2.  Go to the `name-api` directory
-    3.  Create your virtual environment or re-use an existing one
-    4.  Install the dependencies if you created a new virtual environment
-    5.  Run the command `uvicorn name_api:app`
-    6.  Verify your webserver is running by visiting http://localhost:8000 on your browser
-    7.  Open another terminal while keeping the name-api running
-    8.  Go to the `dog-api` directory
-    9.  Create your virtual environment or re-use an existing one
-    10. Install the dependencies if you created a new virtual environment
-    11. Run the following Pytest command to execute the integration test
-    ```bash
-    NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
-    ```
-    Notice how we're passing the enviromental variable `http://localhost:8000` here before running the Pytest command. This environmental variable is specified within the `dog_api.py` in the following code block
-    ```python
-    def name_service():
-      url = os.environ.get('NAME_API_URL', 'http://localhost:8001')
-      ...
-    ```
-    When we ran our name api, it defaults to port `8000` which means we need to specify the environmental variable to use port `8000` instead of `8001` which is the default if no environmental variables were specified.
+  11. To get our integration test working locally, let's run our name api webserver.
+       1. Open up a new terminal
+       2. Go to the `name-api` directory
+       3. Create your virtual environment or re-use an existing one
+       4. Install the dependencies if you created a new virtual environment
+       5. Run the command `uvicorn name_api:app`
+       6. Verify your webserver is running by visiting http://localhost:8000 on your browser
+       7. Open another terminal while keeping the name-api running
+       8. Go to the `dog-api` directory
+       9. Create your virtual environment or re-use an existing one
+       10. Install the dependencies if you created a new virtual environment
+       11. Run the following Pytest command to execute the integration test
+            ```bash
+            NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
+            ```
+            Notice how we're passing the enviromental variable `http://localhost:8000` here before running the Pytest command. This environmental variable is specified within the `dog_api.py` in the following code block
+            ```python
+            def name_service():
+              url = os.environ.get('NAME_API_URL', 'http://localhost:8001')
+              ...
+            ```
+            When we ran our name api, it defaults to port `8000` which means we need to specify the environmental variable to use port `8000` instead of `8001` which is the default if no environmental variables were specified.
+
+  12. We're now ready to add the integration test to our GitHub actions CI flow! Open up `ci.yaml` and add these extra blocks of code
+      ```yaml
+          # This will run our name api in the background so our GitHub actions doesn't get stuck!
+          # It runs on the background using some special Linux commands such as `nohup` and `&`
+          - name: Start the Name API in the Background
+            run: |
+              python -m pip install --upgrade pip
+              pip install -r requirements.txt
+              nohup uvicorn name_api:app &
+            working-directory: name-api
+
+          # This runs our integration test which targets our name api deployed at http://localhost:8000
+          # We pass the flag --run-integration-tests to execute our test case we wrote in dog_test.py
+          - name: Python Integration Test
+            run: NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
+            working-directory: dog-api
+        ```
+
+1.  Commit and push the changes you have so far to see the GitHub actions integration test run. If everything has ran successfully, you've just built your first integration test!
+
+
 
 ### The Recap
 
@@ -959,3 +988,10 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
 1. Integration Testing
 2. Building and storing our Docker container images
 3. Versioning our Docker container images
+
+
+## NOTES
+
+1. Re-read section on unit testing and integration
+   1. Did I mention anything about branching?
+   2. Do the steps make sense?
