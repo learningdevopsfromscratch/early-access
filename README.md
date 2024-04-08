@@ -986,3 +986,4 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
 
 1. Building and storing our Docker container images
 2. Versioning our Docker container images
+3. Continuous Delivery/Deployment
