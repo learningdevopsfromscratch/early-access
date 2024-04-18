@@ -95,7 +95,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           nohup uvicorn name_api:app &
-        working-directory: integration-test/name-api
+        working-directory: integration-test/examples/name-api
 
       # This runs our integration test which targets our name api deployed at http://localhost:8000
       # We pass the flag --run-integration-tests to execute our test case we wrote in dog_test.py
