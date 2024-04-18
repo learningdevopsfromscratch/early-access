@@ -11,8 +11,8 @@ on:
     # changes. We can read this as run the workflow on
     # any 'push' event that occurs for contents inside of
     # the 'dog-api' directory.
-    paths:
-      - './dog-api/**'
+    # paths:
+    #   - './dog-api/**'
 
 # This section specifies environmental variables we can use throughout
 # our GitHub actions. Any step can reference this variable.
