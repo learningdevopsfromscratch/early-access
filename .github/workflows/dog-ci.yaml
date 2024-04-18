@@ -74,11 +74,15 @@ jobs:
         run: pytest
         working-directory: dog-api
 
+      - name: Create directory for storing the specific version of name-api
+        run: |
+          mkdir integration-test
+
       - name: Checkout specific version of name-api
         uses: actions/checkout@v4
         with:
           ref: ${{ env.NAME_API_VERSION }}
-          path: ./integration-test
+          path: integration-test
 
       # This will run our name api in the background so our GitHub actions doesn't get stuck!
       # It runs on the background using some special Linux commands such as `nohup` and `&`
