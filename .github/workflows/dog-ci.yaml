@@ -22,7 +22,7 @@ env:
   # version of the name-api. The value here is a git commit sha or in other words,
   # a reference to the commit that contains the code of name-api we want to test
   # against.
-  NAME_API_VERSION: 8af8dbd6d84335f842026055ce25301842b8a9c1
+  NAME_API_VERSION: ccc2b84d91eeff7880c1fdc0274d8e3e4667ca81
 
 # Here we have a list of jobs to run. Each job consists of multiple steps.
 jobs:
@@ -95,7 +95,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           nohup uvicorn name_api:app &
-        working-directory: integration-test/examples/name-api
+        working-directory: integration-test/name-api
 
       # This runs our integration test which targets our name api deployed at http://localhost:8000
       # We pass the flag --run-integration-tests to execute our test case we wrote in dog_test.py
