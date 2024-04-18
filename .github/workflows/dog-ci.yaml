@@ -74,9 +74,9 @@ jobs:
         run: pytest
         working-directory: dog-api
 
-      - name: Create directory for storing the specific version of name-api
-        run: |
-          mkdir integration-test
+      # - name: Create directory for storing the specific version of name-api
+      #   run: |
+      #     mkdir integration-test
 
       - name: Checkout specific version of name-api
         uses: actions/checkout@v4
@@ -91,7 +91,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           nohup uvicorn name_api:app &
-        working-directory: ./integration-test/name-api
+        working-directory: integration-test/name-api
 
       # This runs our integration test which targets our name api deployed at http://localhost:8000
       # We pass the flag --run-integration-tests to execute our test case we wrote in dog_test.py
