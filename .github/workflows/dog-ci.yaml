@@ -13,7 +13,7 @@ on:
     # the 'dog-api' directory.
     paths:
       - './dog-api/**'
-      - './github/workflows/dog-ci.yaml'
+      - '.github/workflows/dog-ci.yaml'
 
 # This section specifies environmental variables we can use throughout
 # our GitHub actions. Any step can reference this variable.
