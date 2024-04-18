@@ -5,7 +5,24 @@ name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions
 
 # This is what triggers the GitHub action to run. Here, we have a 'push'.
-on: [push]
+on:
+  push:
+    # This section allows us to filter where to look for
+    # changes. We can read this as run the workflow on
+    # any 'push' event that occurs for contents inside of
+    # the 'dog-api' directory.
+    paths:
+      - './dog-api/**'
+
+# This section specifies environmental variables we can use throughout
+# our GitHub actions. Any step can reference this variable.
+env:
+  # Here we're creating a new environment variable called `NAME_API_VERSION`
+  # We do this because want our integration test to run against a specific
+  # version of the name-api. The value here is a git commit sha or in other words,
+  # a reference to the commit that contains the code of name-api we want to test
+  # against.
+  NAME_API_VERSION: 8af8dbd6d84335f842026055ce25301842b8a9c1
 
 # Here we have a list of jobs to run. Each job consists of multiple steps.
 jobs:
@@ -38,6 +55,7 @@ jobs:
         run: |
           echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_PATH
           echo "${{ github.path }}"
+        working-directory: dog-api
 
       # This will install all our dependencies that we need.
       - name: Install Python Dependencies
@@ -47,9 +65,32 @@ jobs:
 
           # This install the dependencies
           pip install -r requirements.txt
+        working-directory: dog-api
 
       # This will run pytest like we do locally. If anything fails,
       # the GitHub action will mark the results red. If nothing fails,
       # GitHub action will mark our results green.
       - name: Python Unit Test
-        run: pytest --ignore=examples
+        run: pytest
+        working-directory: dog-api
+
+      - name: Checkout specific version of name-api
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.NAME_API_VERSION }}
+          path: ./integration-test
+
+      # This will run our name api in the background so our GitHub actions doesn't get stuck!
+      # It runs on the background using some special Linux commands such as `nohup` and `&`
+      - name: Start the Name API in the Background
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          nohup uvicorn name_api:app &
+        working-directory: ./integration-test/name-api
+
+      # This runs our integration test which targets our name api deployed at http://localhost:8000
+      # We pass the flag --run-integration-tests to execute our test case we wrote in dog_test.py
+      - name: Python Integration Test
+        run: NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
+        working-directory: dog-api

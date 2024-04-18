@@ -23,6 +23,8 @@ Author: David Bour, *version: 0.0.6*
     - [The Approach](#the-approach-1)
       - [Unit Testing](#unit-testing)
       - [Integration Testing](#integration-testing)
+      - [Refactoring the Test Suites](#refactoring-the-test-suites)
+      - [Building and Shipping Artifacts](#building-and-shipping-artifacts)
     - [The Recap](#the-recap-1)
   - [Coming Up](#coming-up)
 
@@ -959,8 +961,6 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
 
   12. We're now ready to add the integration test to our GitHub actions CI flow! Open up `ci.yaml` and add these extra blocks of code
       ```yaml
-          # This will run our name api in the background so our GitHub actions doesn't get stuck!
-          # It runs on the background using some special Linux commands such as `nohup` and `&`
           - name: Start the Name API in the Background
             run: |
               python -m pip install --upgrade pip
@@ -968,16 +968,82 @@ The concepts and practice of testing extend beyond the scope of this book. We'll
               nohup uvicorn name_api:app &
             working-directory: name-api
 
-          # This runs our integration test which targets our name api deployed at http://localhost:8000
-          # We pass the flag --run-integration-tests to execute our test case we wrote in dog_test.py
           - name: Python Integration Test
             run: NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
             working-directory: dog-api
         ```
 
-13. Commit and push the changes you have so far to see the GitHub actions integration test run. If everything has ran successfully, you've just built your first integration test!
+  13. Commit and push the changes you have so far to see the GitHub actions integration test run. If everything has ran successfully, you've just built your first integration test!
 
+#### Refactoring the Test Suites
 
+We've successfully created a fully featured testing pipeline, but there are a few improvements that can be made to capture a few cases we have not considered.
+
+Our current testing pipeline implementation only assumes we're building and testing the *dog-api*, but we also have the *name-api* service in our repository. The pipeline also assumes we want to test everytime any file changes, but we haven't considered the scenario where there could be changes to one service while the other service remains the same; this situation could be costly as we're testing redundant code.
+
+In the up coming section, we're going to be making changes to our GitHub actions so each of our services have their own "pipeline". This approach will allow us to release these services at their own cadence and help us parallelize our testing efforts; by parallelizing the testing I'm referring to the fact that we can run our test suite on each service at the same time as opposed to having to wait for one test to be done on a service before initiating another test.
+
+  1. We'll begin by refactoring our `ci.yaml` file. Since the original `ci.yaml` was mainly tied to testing our *dog-api*, we'll focus our refactoring to make the `ci.yaml` more *dog-api* specific. The following series of steps will outline the changes required to achieve our goal of making an independent testing pipeline:
+
+     1. The first change is simple and involves us renaming our `ci.yaml` to `dog-api.yaml`, allowing us to distinguish it from a future variant we'll create called `name-api.yaml`.
+
+     2. The next change involves modifying our workflow trigger. As mentioned prior, waiting for the CI process can be expensive which means we want to be intentional about when to trigger our CI workflow. To achieve this, we'll need to modify our workflow to only trigger on code changes specific to the *dog-api*.
+   
+        *Before*
+        ```yaml
+        on: [push]
+        ```
+        *After*
+        ```yaml
+        on:
+          push:
+            paths:
+              - './dog-api/**'
+        ```
+        The change introduced above can be read as, "only run the GitHub action workflow when there's a *push* event that occurs for any contents within the *dog-api* directory". In other words, our workflow will not run for files that change outside of the `dog-api/` directory.
+
+     3. To complete our refactor, we'll want to pin the version of the *name-api* that we're testing *dog-api* against. The current testing implementation performs the integration test on the latest code on the branch which triggered the test. This is a side-effect of having a monorepo structure (TODO: add links to monorepo) containing all our services. Testing the latest code of both services is not always desirable as the two services have their own release cadence. Take the following scenario: 
+          > The *dog-api* is running live with version 1.0 along with *name-api* running on version 1.0. A few days later, we discover a bug in *dog-api*. In the time between discovering the bug, the team has been adding new features to *name-api* in preparation for the version 2.0 release. We create the bug fix and trigger our CI for *dog-api*. If we don't pin the *name-api* version at this point, our *dog-api* bug patch will run its integration test against the new *name-api* version. Testing against the new version of *name-api* could show that our old *dog-api* with the bug patch is not compatible. The version mismatch detracts from our goal of resolving the bug thats only related to *dog-api*.
+
+        To achieve our goal of pinning the *name-api* version, we can rewrite our CI as follows:
+
+        *Before*
+        ```yaml
+        ...
+
+        on:
+          push:
+            paths:
+              - './dog-api/**'
+
+        jobs:
+
+        ...
+        ```
+        *After*
+        ```yaml
+        ...
+
+        on:
+          push:
+            paths:
+              - './dog-api/**'
+
+        env:
+          NAME_API_VERSION: 8af8dbd6d84335f842026055ce25301842b8a9c1
+
+        jobs:
+
+        ...
+        ```
+        Comments and other code were left out for brevity (TODO: Put this in the legend somewhere of how to read these blocks). Here we are creating an environment variable that could be referenced in any later steps of our GitHub job. The environmental variable's value is a git commit sha or in other words, a reference to a specific historic point within our repository we want to test against. When we want to test against another version of our *name-api* service, we'll have to change this version.
+
+#### Building and Shipping Artifacts
+
+Now that we have our unit test and integration tests, we're ready to package our application into a container image just as we did in the segment titled [Local Development](#local-development). In theory, we could have also skipped packaging our application into a container image and just ship the contents to run on a machine with a Python interpeter. I'm opting us to use container images as we gain the same benefits of having a build that runs in a predictable manner on any system as long as the system can run the container images. Another benefit is many tools such as the *cloud* specific ones on AWS, GCP, or Microsoft Azure give us the option of running our container just by merely uploading it. We also have the option of running the container images on Kubernetes, a powerful container ochestrator that is used by many to simplify managing multiple containers.
+
+  1. Before we begin, we'll need a location to store our container images. A popular free container registry can be obtained at [Docker Hub](https://hub.docker.com/). Register for an account and take note of your credentials for a later step.
+  2. 
 
 ### The Recap
 
