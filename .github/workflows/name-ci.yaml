@@ -6,7 +6,7 @@ on:
   push:
     paths:
       - './name-api/**'
-      - './github/workflows/name-ci.yaml'
+      - './.github/workflows/name-ci.yaml'
 
 jobs:
 

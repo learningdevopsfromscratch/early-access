@@ -1070,14 +1070,14 @@ In the up coming section, we're going to be making changes to our GitHub actions
           push:
             paths:
               - './dog-api/**'
-              - './github/workflows/dog-ci.yaml'
+              - './.github/workflows/dog-ci.yaml'
         ```
 
         Our trigger now looks at changes within the `dog-api/` directory as well as the file `dog-ci.yaml`. Commit your changes and push to see the new integration test in action!
 
 
   2. Next, we're going to create a CI workflow just for our *name-api* service.
-     1. 
+     1. Create a file called `name-ci.yaml` under `.github/workflows`
 #### Building and Shipping Artifacts
 
 Now that we have our unit test and integration tests, we're ready to package our application into a container image just as we did in the segment titled [Local Development](#local-development). In theory, we could have also skipped packaging our application into a container image and just ship the contents to run on a machine with a Python interpeter. I'm opting us to use container images as we gain the same benefits of having a build that runs in a predictable manner on any system as long as the system can run the container images. Another benefit is many tools such as the *cloud* specific ones on AWS, GCP, or Microsoft Azure give us the option of running our container just by merely uploading it. We also have the option of running the container images on Kubernetes, a powerful container ochestrator that is used by many to simplify managing multiple containers.
