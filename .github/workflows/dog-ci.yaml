@@ -11,8 +11,9 @@ on:
     # changes. We can read this as run the workflow on
     # any 'push' event that occurs for contents inside of
     # the 'dog-api' directory.
-    # paths:
-    #   - './dog-api/**'
+    paths:
+      - './dog-api/**'
+      - './github/workflows/dog-ci.yaml'
 
 # This section specifies environmental variables we can use throughout
 # our GitHub actions. Any step can reference this variable.
@@ -74,19 +75,13 @@ jobs:
         run: pytest
         working-directory: dog-api
 
-      # - name: Create directory for storing the specific version of name-api
-      #   run: |
-      #     mkdir integration-test
-
+      # This will checkout our repository at the specific git tag or git commit sha
+      # so we can test against the specific version of name-api.
       - name: Checkout specific version of name-api
         uses: actions/checkout@v4
         with:
           ref: ${{ env.NAME_API_VERSION }}
           path: integration-test
-
-      - name: Debug
-        run: |
-          ls -a integration-test
 
       # This will run our name api in the background so our GitHub actions doesn't get stuck!
       # It runs on the background using some special Linux commands such as `nohup` and `&`

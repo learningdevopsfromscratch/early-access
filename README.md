@@ -1038,6 +1038,46 @@ In the up coming section, we're going to be making changes to our GitHub actions
         ```
         Comments and other code were left out for brevity (TODO: Put this in the legend somewhere of how to read these blocks). Here we are creating an environment variable that could be referenced in any later steps of our GitHub job. The environmental variable's value is a git commit sha or in other words, a reference to a specific historic point within our repository we want to test against. When we want to test against another version of our *name-api* service, we'll have to change this version.
 
+        Our implementation is almost there. We now need to make use of the pinned version. Right after our `name: Python Unit Test` step, let's add the following block:
+
+        ```yaml
+         - name: Checkout specific version of name-api
+           uses: actions/checkout@v4
+           with:
+             ref: ${{ env.NAME_API_VERSION }}
+             path: integration-test
+        ```
+
+        The code block above is going to perform a git checkout using the pinned version we defined as referenced by `${{ env.NAME_API_VERSION }}`. The `path` we specified is the folder we'll place our code we're checking out. If we didn't set the `path`, the action would override the current `dog-api` we want to test against; you can think of this as if we performed `git clone` and placed the contents into a directory called `integration-test`.
+
+        To tie everything together, we need to make sure we're running the correct version of `name-api`. We're going to modify our `name: Start the Name API in the Background` step by giving it a working directory as follows:
+
+        ```yaml
+         - name: Start the Name API in the Background
+           run: |
+             python -m pip install --upgrade pip
+             pip install -r requirements.txt
+             nohup uvicorn name_api:app &
+           working-directory: integration-test/name-api
+        ```
+
+        The `working-directory` here is referencing the *name-api* within the folder we just pulled the specific code into. This allows us to test against the specific version of *name-api* while we test with new variants of our *dog-api*.
+
+        Lastly, we're going to make a minor change to our CI's trigger. We want to trigger our CI to run whenever we change the version of the *name-api* which means the CI workflow has to look for changes within the workflow file itself as well. Make the following changes:
+
+        ```yaml
+        on:
+          push:
+            paths:
+              - './dog-api/**'
+              - './github/workflows/dog-ci.yaml'
+        ```
+
+        Our trigger now looks at changes within the `dog-api/` directory as well as the file `dog-ci.yaml`. Commit your changes and push to see the new integration test in action!
+
+
+  2. Next, we're going to create a CI workflow just for our *name-api* service.
+     1. 
 #### Building and Shipping Artifacts
 
 Now that we have our unit test and integration tests, we're ready to package our application into a container image just as we did in the segment titled [Local Development](#local-development). In theory, we could have also skipped packaging our application into a container image and just ship the contents to run on a machine with a Python interpeter. I'm opting us to use container images as we gain the same benefits of having a build that runs in a predictable manner on any system as long as the system can run the container images. Another benefit is many tools such as the *cloud* specific ones on AWS, GCP, or Microsoft Azure give us the option of running our container just by merely uploading it. We also have the option of running the container images on Kubernetes, a powerful container ochestrator that is used by many to simplify managing multiple containers.
