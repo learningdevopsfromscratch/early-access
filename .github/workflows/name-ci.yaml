@@ -61,4 +61,4 @@ jobs:
 
       - name: Push Container to Registry
         run: |
-          docker push -t name-api:${{ github.sha }}
+          docker push name-api:${{ github.sha }}
