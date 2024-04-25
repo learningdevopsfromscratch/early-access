@@ -5,7 +5,25 @@ name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions
 
 # This is what triggers the GitHub action to run. Here, we have a 'push'.
-on: [push]
+on:
+  push:
+    # This section allows us to filter where to look for
+    # changes. We can read this as run the workflow on
+    # any 'push' event that occurs for contents inside of
+    # the 'dog-api' directory.
+    paths:
+      - './dog-api/**'
+      - '.github/workflows/dog-ci.yaml'
+
+# This section specifies environmental variables we can use throughout
+# our GitHub actions. Any step can reference this variable.
+env:
+  # Here we're creating a new environment variable called `NAME_API_VERSION`
+  # We do this because want our integration test to run against a specific
+  # version of the name-api. The value here is a git commit sha or in other words,
+  # a reference to the commit that contains the code of name-api we want to test
+  # against.
+  NAME_API_VERSION: ccc2b84d91eeff7880c1fdc0274d8e3e4667ca81
 
 # Here we have a list of jobs to run. Each job consists of multiple steps.
 jobs:
@@ -57,6 +75,14 @@ jobs:
         run: pytest
         working-directory: dog-api
 
+      # This will checkout our repository at the specific git tag or git commit sha
+      # so we can test against the specific version of name-api.
+      - name: Checkout specific version of name-api
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.NAME_API_VERSION }}
+          path: integration-test
+
       # This will run our name api in the background so our GitHub actions doesn't get stuck!
       # It runs on the background using some special Linux commands such as `nohup` and `&`
       - name: Start the Name API in the Background
@@ -64,7 +90,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           nohup uvicorn name_api:app &
-        working-directory: name-api
+        working-directory: integration-test/name-api
 
       # This runs our integration test which targets our name api deployed at http://localhost:8000
       # We pass the flag --run-integration-tests to execute our test case we wrote in dog_test.py

@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-  test:
+  name-ci:
 
     runs-on: ubuntu-latest
 
