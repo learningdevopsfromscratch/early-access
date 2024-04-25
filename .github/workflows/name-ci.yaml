@@ -53,7 +53,7 @@ jobs:
 
       - name: Build Container
         run: |
-          docker build -t name-api:${{ github.sha }}
+          docker build -t name-api:${{ github.sha }} .
           docker images -a
         working-directory: name-api
 
