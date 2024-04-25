@@ -2,7 +2,7 @@
 name: GitHub Actions Demo
 
 # This is the result name of the GitHub Action
-run-name: ${{ github.actor }} is testing out GitHub Actions
+run-name: ${{ github.actor }} is running the Dog API CI
 
 # This is what triggers the GitHub action to run. Here, we have a 'push'.
 on:
