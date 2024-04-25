@@ -3,7 +3,6 @@ name: Name API CI
 run-name: ${{ github.actor }} is running the Name API CI
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - './name-api/**'
@@ -54,6 +53,12 @@ jobs:
       - name: Build Container
         run: |
           docker build -t name-api:${{ github.sha }} .
-          docker images -a
         working-directory: name-api
 
+      - name: Docker Hub Login
+        run: |
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Push Container to Registry
+        run: |
+          docker push -t name-api:${{ github.sha }}
