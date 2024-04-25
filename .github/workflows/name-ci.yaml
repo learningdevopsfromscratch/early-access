@@ -57,9 +57,8 @@ jobs:
 
       - name: Docker Hub Login
         run: |
-          export DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
-          echo $env.DOCKERHUB_PASSWORD | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Push Container to Registry
         run: |
-          docker push name-api:${{ github.sha }}
+          docker push davidbour/name-api:${{ github.sha }}
