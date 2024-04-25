@@ -97,3 +97,26 @@ jobs:
       - name: Python Integration Test
         run: NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
         working-directory: dog-api
+
+  build:
+
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+
+      - name: Checkout code from repository
+        uses: actions/checkout@v4
+
+      - name: Build Container
+        run: |
+          docker build -t davidbour/dog-api:${{ github.sha }} .
+        working-directory: dog-api
+
+      - name: Docker Hub Login
+        run: |
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Push Container to Registry
+        run: |
+          docker push davidbour/dog-api:${{ github.sha }}

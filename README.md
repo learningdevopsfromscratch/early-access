@@ -1123,15 +1123,15 @@ In the up coming section, we're going to be making changes to our GitHub actions
                   working-directory: name-api
         ```
 
-        The workflow file should look very familiar to you. It's almost an identical copy of our `dog-ci.yaml` except we're only looking for changes within the context of the *name-api* service. GitHub actions does have a concept of reusable workflows if we wanted to share this logic between the services. You can read up more on the reusable workflows [here](https://docs.github.com/en/actions/using-workflows/reusing-workflows).
+        The workflow file should look very familiar to you. It's almost an identical copy of our `dog-ci.yaml` except we're only looking for changes within the context of the *name-api* service. GitHub actions does have a concept of reusable workflows if we wanted to share this logic between the services. You can read up more on the reusable workflows at https://docs.github.com/en/actions/using-workflows/reusing-workflows.
 
         With these two CI workflows, we conclude our improvements on our test suites. In the next section, we'll change our focus on how to package our application for distribution.
 #### Building and Shipping Artifacts
 
 Now that we have our unit test and integration tests, we're ready to package our application into a container image just as we did in the segment titled [Local Development](#local-development). In theory, we could have also skipped packaging our application into a container image and just ship the contents to run on a machine with a Python interpeter. I'm opting us to use container images as we gain the same benefits of having a build that runs in a predictable manner on any system as long as the system can run the container images. Another benefit of containerization is many *cloud* providers offer services which will host our container images with minimal setup; this is sometimes referred to as *serverless* which is kind of an ironic name as the *cloud* provider still runs your container on a server, it's just that they manage the server for you. Containerizing our application also opens up the ability to run on Kubernetes, a powerful container ochestrator that is used by many organizations to simplify managing multiple containers.
 
-  1. Before we begin, we'll need a location to store our container images. A popular free container registry can be obtained at [Docker Hub](https://hub.docker.com/). Register for an account and take note of your credentials for a later step.
-  2. 
+  1. Before we begin, we'll need a location to store our container images. A popular free container registry can be obtained at [Docker Hub](https://hub.docker.com/). Register for an account and create an access token. We'll need this access token for a later step in our GitHub Actions pipeline. To learn how to get an access token, please see the document at https://docs.docker.com/security/for-developers/access-tokens. 
+  2. Now we're going to store our Docker Hub credentials within GitHub Actions secrets. GitHub Action allows us to store secret values that could be used with any of our workflows. To learn how to create a GitHub actions secret, see the document at https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions. Create two secrets and name them `DOCKERHUB_USERNAME` and `DOCKERHUB_PASSWORD`. `DOCKERHUB_USERNAME` is the username you used to log into https://hub.docker.com/ and `DOCKERHUB_PASSWORD` is the access token you created in a prior step.
 
 ### The Recap
 
