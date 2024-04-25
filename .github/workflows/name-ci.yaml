@@ -52,7 +52,7 @@ jobs:
 
       - name: Build Container
         run: |
-          docker build -t name-api:${{ github.sha }} .
+          docker build -t davidbour/name-api:${{ github.sha }} .
         working-directory: name-api
 
       - name: Docker Hub Login
