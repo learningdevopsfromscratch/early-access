@@ -3,6 +3,7 @@ name: Name API CI
 run-name: ${{ github.actor }} is running the Name API CI
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - './name-api/**'
@@ -39,3 +40,18 @@ jobs:
       - name: Python Unit Test
         run: pytest
         working-directory: name-api
+
+  build:
+
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+
+      - name: Checkout code from repository
+        uses: actions/checkout@v4
+
+      - name: Build Container
+        run: |
+          docker build -t name-api:${{ github.sha }}
+          docker images -a
