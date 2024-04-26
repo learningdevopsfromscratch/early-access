@@ -1132,6 +1132,7 @@ Now that we have our unit test and integration tests, we're ready to package our
 
   1. Before we begin, we'll need a location to store our container images. A popular free container registry can be obtained at [Docker Hub](https://hub.docker.com/). Register for an account and create an access token. We'll need this access token for a later step in our GitHub Actions pipeline. To learn how to get an access token, please see the document at https://docs.docker.com/security/for-developers/access-tokens. 
   2. Now we're going to store our Docker Hub credentials within GitHub Actions secrets. GitHub Action allows us to store secret values that could be used with any of our workflows. To learn how to create a GitHub actions secret, see the document at https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions. Create two secrets and name them `DOCKERHUB_USERNAME` and `DOCKERHUB_PASSWORD`. `DOCKERHUB_USERNAME` is the username you used to log into https://hub.docker.com/ and `DOCKERHUB_PASSWORD` is the access token you created in a prior step.
+  3. We now have everything needed to start refactoring our GitHub actions to build our container.
 
 ### The Recap
 

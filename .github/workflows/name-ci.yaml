@@ -8,6 +8,9 @@ on:
       - './name-api/**'
       - '.github/workflows/name-ci.yaml'
 
+env:
+  CONTAINER_REGISTRY: learndevopsfromscratch
+
 jobs:
 
   test:
@@ -52,7 +55,7 @@ jobs:
 
       - name: Build Container
         run: |
-          docker build -t davidbour/name-api:${{ github.sha }} .
+          docker build -t ${{ env.CONTAINER_REGISTRY }}/name-api:${{ github.sha }} .
         working-directory: name-api
 
       - name: Docker Hub Login
@@ -61,4 +64,4 @@ jobs:
 
       - name: Push Container to Registry
         run: |
-          docker push davidbour/name-api:${{ github.sha }}
+          docker push ${{ env.CONTAINER_REGISTRY }}/name-api:${{ github.sha }}
