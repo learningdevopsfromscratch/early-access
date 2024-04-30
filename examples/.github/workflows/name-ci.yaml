@@ -8,9 +8,12 @@ on:
       - './name-api/**'
       - '.github/workflows/name-ci.yaml'
 
+env:
+  CONTAINER_REGISTRY: learndevopsfromscratch
+
 jobs:
 
-  name-ci:
+  test:
 
     runs-on: ubuntu-latest
 
@@ -39,3 +42,26 @@ jobs:
       - name: Python Unit Test
         run: pytest
         working-directory: name-api
+
+  build:
+
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+
+      - name: Checkout code from repository
+        uses: actions/checkout@v4
+
+      - name: Build Container
+        run: |
+          docker build -t ${{ env.CONTAINER_REGISTRY }}/name-api:${{ github.sha }} .
+        working-directory: name-api
+
+      - name: Docker Hub Login
+        run: |
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Push Container to Registry
+        run: |
+          docker push ${{ env.CONTAINER_REGISTRY }}/name-api:${{ github.sha }}

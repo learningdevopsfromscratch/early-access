@@ -1,8 +1,8 @@
 # This is the name of the GitHub Action
-name: GitHub Actions Demo
+name: Dog API CI
 
 # This is the result name of the GitHub Action
-run-name: ${{ github.actor }} is testing out GitHub Actions
+run-name: ${{ github.actor }} is running the Dog API CI
 
 # This is what triggers the GitHub action to run. Here, we have a 'push'.
 on:
@@ -24,12 +24,20 @@ env:
   # a reference to the commit that contains the code of name-api we want to test
   # against.
   NAME_API_VERSION: ccc2b84d91eeff7880c1fdc0274d8e3e4667ca81
+  # This container registry is the name of your Docker Hub username. Each Docker Hub account
+  # has a unique name so you can associate your container image to your username. This
+  # allows other users to upload container images that potentially have the same name.
+  # As an example, say my username is "learndevopsfromscratch" and I have a container image name
+  # dog-api. The full identifier would be learnfromdevopsfromscratch/dog-api. Someone with the username
+  # david could have a container image that is also dog-api which wouldn't conflict with learnfromdevopsfromscratch/dog-api
+  # because theirs identifier would be david/dog-api
+  CONTAINER_REGISTRY: learndevopsfromscratch
 
 # Here we have a list of jobs to run. Each job consists of multiple steps.
 jobs:
 
-  # This is what we're naming our first job.
-  explore-github-actions:
+  # This step runs out unit and integration tests
+  test:
 
     # This is telling the job what type of computer operating system to run on.
     runs-on: ubuntu-latest
@@ -97,3 +105,37 @@ jobs:
       - name: Python Integration Test
         run: NAME_API_URL=http://localhost:8000 pytest --run-integration-tests
         working-directory: dog-api
+
+  # This is a second job that runs after the job `test` is completed. We only run this
+  # job if `test` ran without any errors as indicated by the annotation "needs: [test]".
+  # The annotation means we need all test to run and pass before running the build job.
+  build:
+
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+
+      - name: Checkout code from repository
+        uses: actions/checkout@v4
+
+      # This step uses Docker to build our container image and gives it a tag
+      # using a built-in variable that GitHub provies called `github.sha`. The
+      # `github.sha` is the equivalent to the git commit sha.
+      - name: Build Container
+        run: |
+          docker build -t ${{ env.CONTAINER_REGISTRY }}/dog-api:${{ github.sha }} .
+        working-directory: dog-api
+
+      # This step is used for logging into Docker Hub. Notice how we're referencing a secret
+      # that has been specified on our GitHub repository page. To learn more about why
+      # we log in this way, see https://docs.docker.com/reference/cli/docker/login/. To learn more
+      # about GitHub secrets, see https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions.
+      - name: Docker Hub Login
+        run: |
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      # The final step is telling the workflow to upload the container image to Docker Hub.
+      - name: Push Container to Registry
+        run: |
+          docker push ${{ env.CONTAINER_REGISTRY }}/dog-api:${{ github.sha }}

@@ -1,5 +1,5 @@
 # DevOps From Scratch (Early Access)
-Author: David Bour, *version: 0.0.6*
+Author: David Bour, *version: 0.0.7*
 
 - [DevOps From Scratch (Early Access)](#devops-from-scratch-early-access)
   - [Who is this for?](#who-is-this-for)
@@ -41,7 +41,7 @@ For the sake of this guide, we're going to add our own definition as well. DevOp
 
 If we were to make an analogy to this delivery pipeline, we could say the software delivery pipeline is akin to an assembly line like the one you see in a car manufacturing plant. Instead of shipping car parts, we're shipping code. Instead of the car being the final product, we're standing up an application. As in the field of car manufacturing, we also want to ensure our product passes quality assurance tests.
 
-With that said, our main focus on this guide will be around the concept of a software pipeline which is composed of building, testing, deploying, and observability.
+With that said, our main focus on this guide will be around the concept of a software pipeline which is composed of building, testing, and deploying.
 
 No matter what definition of DevOps you choose to adopt or job title you obtain, you'll more than likely have to deal with one or more of these areas within the software delivery pipeline. The goal of this guide is to get you started in the field of DevOps and hopefully help guide you in decide your career choices as you explore the different topics.
 
@@ -151,12 +151,11 @@ If you recall, we're going to center the teachings of DevOps principles around t
     - Unit Testing
     - Integration Testing
     - Artifact Management
-    - Code Quality Scans
 
 3. Deploy Step (Continuous Delivery/Deployment)
     - Infrastructure Setup
     - Environment Setup
-    - Observability
+
 
 ### The Scenario
 
@@ -449,12 +448,10 @@ You did it! You optimized the time it took to iterate locally when developing co
     - Unit Testing
     - Integration Testing
     - Artifact Management
-    - Code Quality Scans
 
 3. Deploy Step (Continuous Delivery/Deployment)
     - Infrastructure Setup
     - Environment Setup
-    - Observability
 
 ### The Scenario
 
@@ -469,7 +466,7 @@ If we break down the CI process, we see it has some core steps:
   1. Unit Testing - this step involves running tests against our code every time we add a new feature to ensure our code behaves as we expect.
   2. Integration Testing - integration testing is a level above unit testing where we're now testing two or more functions that collaborate together or a function with an external system such as a database interaction.
   3. Artifact Management - once we package our code as either a binary or container image, we need to store it into a location where our CD process can pull it.
-  4. Code Quality Scans - Quality scans can include checking for syntax, security vulnerabilities, and/or test coverage.
+
 
 ### The Approach
 
@@ -605,7 +602,7 @@ Unit testing at its core is testing a basic functionality of our application. Lo
   11. In the `ci.yaml`, add the following content. Read the comments which are preceded by the `#` symbol to get an understanding of what each step is doing. The result of this file is we'll have a way to trigger a unit test each time we commit and *push* new changes to our GitHub repository; we could have triggered the GitHub action to run on *pull request* as well. See the [docs](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows) for more information on triggers. GitHub actions can use the results of our actions to perform extra steps such as blocking the pull request from being merged into our main branch unless our unit tests pass. You can read more about branch protection [here](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches#require-status-checks-before-merging).
         ```yaml
           # This is the name of the GitHub Action
-          name: GitHub Actions Demo
+          name: Dog API CI
 
           # This is the result name of the GitHub Action
           run-name: ${{ github.actor }} is testing out GitHub Actions
@@ -617,7 +614,7 @@ Unit testing at its core is testing a basic functionality of our application. Lo
           jobs:
 
             # This is what we're naming our first job.
-            explore-github-actions:
+            test:
 
               # This is telling the job what type of computer operating system to run on.
               runs-on: ubuntu-latest
@@ -1092,7 +1089,7 @@ In the up coming section, we're going to be making changes to our GitHub actions
 
           jobs:
 
-            name-ci:
+            test:
 
               runs-on: ubuntu-latest
 
@@ -1126,19 +1123,85 @@ In the up coming section, we're going to be making changes to our GitHub actions
         The workflow file should look very familiar to you. It's almost an identical copy of our `dog-ci.yaml` except we're only looking for changes within the context of the *name-api* service. GitHub actions does have a concept of reusable workflows if we wanted to share this logic between the services. You can read up more on the reusable workflows at https://docs.github.com/en/actions/using-workflows/reusing-workflows.
 
         With these two CI workflows, we conclude our improvements on our test suites. In the next section, we'll change our focus on how to package our application for distribution.
+
 #### Building and Shipping Artifacts
 
 Now that we have our unit test and integration tests, we're ready to package our application into a container image just as we did in the segment titled [Local Development](#local-development). In theory, we could have also skipped packaging our application into a container image and just ship the contents to run on a machine with a Python interpeter. I'm opting us to use container images as we gain the same benefits of having a build that runs in a predictable manner on any system as long as the system can run the container images. Another benefit of containerization is many *cloud* providers offer services which will host our container images with minimal setup; this is sometimes referred to as *serverless* which is kind of an ironic name as the *cloud* provider still runs your container on a server, it's just that they manage the server for you. Containerizing our application also opens up the ability to run on Kubernetes, a powerful container ochestrator that is used by many organizations to simplify managing multiple containers.
 
   1. Before we begin, we'll need a location to store our container images. A popular free container registry can be obtained at [Docker Hub](https://hub.docker.com/). Register for an account and create an access token. We'll need this access token for a later step in our GitHub Actions pipeline. To learn how to get an access token, please see the document at https://docs.docker.com/security/for-developers/access-tokens. 
   2. Now we're going to store our Docker Hub credentials within GitHub Actions secrets. GitHub Action allows us to store secret values that could be used with any of our workflows. To learn how to create a GitHub actions secret, see the document at https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions. Create two secrets and name them `DOCKERHUB_USERNAME` and `DOCKERHUB_PASSWORD`. `DOCKERHUB_USERNAME` is the username you used to log into https://hub.docker.com/ and `DOCKERHUB_PASSWORD` is the access token you created in a prior step.
-  3. We now have everything needed to start refactoring our GitHub actions to build our container.
+  3. We now have everything needed to start refactoring our GitHub actions to build our container images and store them on Docker Hub.
+
+     1. First, let's open `dog-ci.yaml` and add the following variable under the `env:` block
+        ```yaml
+        env:
+          ...
+          CONTAINER_REGISTRY: your-dockerhub-username-here
+        ```
+        We'll use this environmental variable later to ship our container image to the correct location in Docker Hub. Remember to change `your-dockerhub-username-here` with your actual Docker Hub username.
+     2. Next, under our first job, create a second job and label it `build`. Add the additional content after `build`. The file should look as follow:
+         ```yaml
+         name: Dog API CI
+         ...
+         jobs:
+          test:
+            runs-on: ubuntu-latest
+            ...
+          build:
+            runs-on: ubuntu-latest
+            needs: [test]
+
+            steps:
+
+              - name: Checkout code from repository
+                uses: actions/checkout@v4
+
+              - name: Build Container
+                run: |
+                  docker build -t ${{ env.CONTAINER_REGISTRY }}/dog-api:${{ github.sha }} .
+                working-directory: dog-api
+
+              - name: Docker Hub Login
+                run: |
+                  echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+              - name: Push Container to Registry
+                run: |
+                  docker push ${{ env.CONTAINER_REGISTRY }}/dog-api:${{ github.sha }}
+         ```
+         The first interesting syntax to note is the `needs: [test]` line. This line states that it needs our prior job to run its unit test and pass before we start building and shipping our container image. We should always aim to test our code before creating or packaging our code for distribution.
+
+         We then build the container just as we did in the **Local Development** section. The difference here is we're tagging our container image with a built-in variable provided by GitHub actions called `github.sha` which is equivalent to our git commit sha. To see a list of built-in GitHub action variables, see the documentation here https://docs.github.com/en/actions/learn-github-actions/variables. Tagging the container image with the `github.sha` allows us to track which git commit is associated with our container image. Tagging our container image with the git commit sha helps our future self retrace our steps within our git commit history to resolve any potential bugs.
+
+         Another difference in our build is we're naming our container image using the `CONTAINER_REGISTRY` environmental variable we specified earlier in the workflow. The reason this is required is because Docker Hub requires us to specify which account the container image belongs to. If Docker Hub didn't have this specification, many other people could name their container image *dog-api* and there would be no way of distinguishing what application is really associated with *dog-api*; for example, we could have a Python app and call it *dog-api* while another person can have a Java app and call it *dog-api*. 
+
+         Once we build our container image, we need to log into Docker Hub before uploading our container image. Recall that we added secrets to our GitHub repository. We can reference those secrets using the syntax `${{ secrets.THE_SECRET_YOU_SPECIFIED }}`. After we log in, we'll push (upload) the container image to Docker Hub.
+
+     3. To complete this exercise, perform the same changes for the *name-api*.
+   
+At this stage, we now have a full build pipeline that will test and upload our artifact to later be used for our continuous delivery/deployment step. Commit your work and merge it to the main branch if you have not done so already.
+
 
 ### The Recap
 
+Our journey has taken us from defining test cases, creating a continuous integration pipeline, learning GitHub actions, and shipping our first container image artifact! We have learned a lot, but we have barely scratched the surface of continuous integration. There's an old saying that premature optimization is the root of all evil, so we'll abide by the wisdom and leave our fully functional continuous integration pipeline as is until there are requirements to add to it.
+
+It's that time again for you to write up a summary of the achievements you've accomplished.
+
+Here are some questions to help get you started:
+
+1. What is the purpose of continuous integration?
+
+2. What is GitHub actions?
+
+3. What's the difference between a unit test and an integration test?
+
+4. Why do we containerize applications?
+
+5. Why do we tag container images with the git commit sha?
+
+Answer these questions and add them to your `README.md` in your GitHub repository!
 
 ## Coming Up
 
-1. Building and storing our Docker container images
-2. Versioning our Docker container images
-3. Continuous Delivery/Deployment
+1. Continuous Delivery/Deployment
