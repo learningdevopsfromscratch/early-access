@@ -162,6 +162,6 @@ jobs:
       # so we can reference back to it later in the deployment step.
       - name: Add Container Tag to Versions File
         run: |
-          python utils/insert-markdown.py ${{ github.sha }} ./dog-api/versions.md
+          python utils/insert-markdown.py ./dog-api/versions.md ${{ github.sha }}
 
 
