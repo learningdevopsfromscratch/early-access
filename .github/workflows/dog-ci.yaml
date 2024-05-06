@@ -143,25 +143,3 @@ jobs:
         run: |
           docker push ${{ env.CONTAINER_REGISTRY }}/dog-api:${{ github.sha }}
 
-  document:
-
-    runs-on: ubuntu-latest
-    needs: [build]
-
-    steps:
-
-      - name: Checkout code from repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      
-      # This will add the github.sha tag we added to the versions markdown file
-      # so we can reference back to it later in the deployment step.
-      - name: Add Container Tag to Versions File
-        run: |
-          python utils/insert-markdown.py ./dog-api/versions.md ${{ github.sha }}
-
-
