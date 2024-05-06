@@ -1,0 +1,6 @@
+1. build chart
+2. store chart
+3. in the deployment repo, add proxy charts
+    the proxy chart just points to our actual chart versions
+    the values.yaml overrides can then be in the same repo in theory
+    so there's no "multi-source" helm happening
