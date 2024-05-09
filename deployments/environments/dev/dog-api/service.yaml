@@ -1,0 +1,9 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: dog-api-dev
+spec:
+  template:
+    spec:
+      containers:
+        - image: "learndevopsfromscratch/dog-api:f9c47639c5d2eff1cfda18695611375f005a8f99"

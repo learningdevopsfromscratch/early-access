@@ -1,0 +1,41 @@
+name: Dog API CD
+
+run-name: ${{ github.actor }} is running the Dog API CD
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "./deployments/environments/dev/dog-api/service.yaml"
+
+jobs:
+
+  deploy:
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+
+      - name: Checkout code from repository
+        uses: actions/checkout@v4
+
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2.1.2
+        with:
+          workload_identity_provider: 'projects/798819781972/locations/global/workloadIdentityPool/github-actions/providers/github-actions-provider'
+          service_account: learndevopsfromscratch@devopsfromscratch.iam.gserviceaccount.com
+    
+      - name: Set up Cloud SDk
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+
+      - name: Use CLI
+        run: |
+          gcloud info
+    

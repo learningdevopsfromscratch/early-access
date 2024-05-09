@@ -6,8 +6,6 @@ run-name: ${{ github.actor }} is running the Dog API CI
 
 # This is what triggers the GitHub action to run. Here, we have a 'push'.
 on:
-  # Debugging
-  workflow_dispatch:
   push:
     # This section allows us to filter where to look for
     # changes. We can read this as run the workflow on
