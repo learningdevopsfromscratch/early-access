@@ -5,8 +5,8 @@ run-name: ${{ github.actor }} is running the Dog API CD
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "./deployments/environments/dev/dog-api/service.yaml"
+    # paths:
+    #   - "./deployments/environments/dev/dog-api/service.yaml"
 
 jobs:
 
