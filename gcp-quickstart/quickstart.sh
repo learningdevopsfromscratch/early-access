@@ -92,3 +92,6 @@ gcloud iam service-accounts add-iam-policy-binding "${SERVICE_ACCOUNT_NAME}" \
     --project="${GOOGLE_CLOUD_PROJECT_ID}" \
     --role="roles/iam.workloadIdentityUser" \
     --member="principalSet://iam.googleapis.com/projects/${GOOGLE_CLOUD_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${WORKLOAD_IDENTITY_POOL}/attribute.repository/{GITHUB_REPOSITORY_PATH}" || true
+
+# This final steps enables the workload identity
+gcloud services enable iamcredentials.googleapis.com
