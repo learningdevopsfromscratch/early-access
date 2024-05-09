@@ -30,12 +30,10 @@ jobs:
           workload_identity_provider: 'projects/798819781972/locations/global/workloadIdentityPools/github-actions/providers/github-actions-provider'
           service_account: learndevopsfromscratch@devopsfromscratch.iam.gserviceaccount.com
     
-      - name: Set up Cloud SDk
-        uses: google-github-actions/setup-gcloud@v2
+      - id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2.4.1
         with:
-          version: '>= 363.0.0'
+          service: 'dev-dog-api'
+          source: ./deployments/environments/dev/dog-api/service.yaml
 
-      - name: Use CLI
-        run: |
-          gcloud info
     
