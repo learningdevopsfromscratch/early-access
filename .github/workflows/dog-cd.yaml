@@ -11,9 +11,6 @@ jobs:
 
   deploy:
 
-    permissions:
-      contents: 'read'
-      id-token: 'write'
     runs-on: ubuntu-latest
     environment: dev
 
@@ -29,10 +26,10 @@ jobs:
           workload_identity_provider: 'projects/798819781972/locations/global/workloadIdentityPools/github-actions/providers/github-actions-provider'
           service_account: learndevopsfromscratch@devopsfromscratch.iam.gserviceaccount.com
     
-      - id: deploy
-        uses: google-github-actions/deploy-cloudrun@v2.4.1
-        with:
-          service: 'dev-dog-api'
-          source: ./deployments/environments/dev/dog-api/service.yaml
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2.1.0'
 
-    
+      - name: Deploy
+        run: |
+          gcloud run deploy --source=./service.yaml
+        working-directory: deployments/environments/dev/dog-api

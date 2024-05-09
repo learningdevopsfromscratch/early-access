@@ -57,7 +57,7 @@ gcloud iam service-accounts create learndevopsfromscratch \
 # ########################################################################
 gcloud projects add-iam-policy-binding ${GOOGLE_CLOUD_PROJECT_ID} \
     --member="serviceAccount:${SERVICE_ACCOUNT_NAME}" \
-    --role="roles/run.invoker" || true
+    --role="roles/run.developer" || true
 
 
 # ########################################################################
